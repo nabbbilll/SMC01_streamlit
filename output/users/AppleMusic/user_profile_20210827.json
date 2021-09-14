@@ -1,0 +1,216 @@
+{
+    "id": 74580436,
+    "id_str": "74580436",
+    "name": "Apple Music",
+    "screen_name": "AppleMusic",
+    "location": "Cupertino, CA",
+    "profile_location": null,
+    "description": "#Donda",
+    "url": "https://t.co/Bs0Vyjyln8",
+    "entities": {
+        "url": {
+            "urls": [
+                {
+                    "url": "https://t.co/Bs0Vyjyln8",
+                    "expanded_url": "http://apple.co/SUBSCRIBE",
+                    "display_url": "apple.co/SUBSCRIBE",
+                    "indices": [
+                        0,
+                        23
+                    ]
+                }
+            ]
+        },
+        "description": {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 9883494,
+    "friends_count": 2062,
+    "listed_count": 22023,
+    "created_at": "Tue Sep 15 22:49:25 +0000 2009",
+    "favourites_count": 359,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 36286,
+    "lang": null,
+    "status": {
+        "created_at": "Fri Aug 27 03:54:25 +0000 2021",
+        "id": 1431102776809975811,
+        "id_str": "1431102776809975811",
+        "text": "#Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda #Donda\u2026 https://t.co/8FDWIWn9gx",
+        "truncated": true,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Donda",
+                    "indices": [
+                        0,
+                        6
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        7,
+                        13
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        14,
+                        20
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        21,
+                        27
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        28,
+                        34
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        35,
+                        41
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        42,
+                        48
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        49,
+                        55
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        56,
+                        62
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        63,
+                        69
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        70,
+                        76
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        77,
+                        83
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        84,
+                        90
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        91,
+                        97
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        98,
+                        104
+                    ]
+                },
+                {
+                    "text": "Donda",
+                    "indices": [
+                        105,
+                        111
+                    ]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [],
+            "urls": [
+                {
+                    "url": "https://t.co/8FDWIWn9gx",
+                    "expanded_url": "https://twitter.com/i/web/status/1431102776809975811",
+                    "display_url": "twitter.com/i/web/status/1\u2026",
+                    "indices": [
+                        113,
+                        136
+                    ]
+                }
+            ]
+        },
+        "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 498,
+        "favorite_count": 1664,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "und"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "EAEAEA",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/1431080866864795649/d36cHFK6_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1431080866864795649/d36cHFK6_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/74580436/1630031276",
+    "profile_link_color": "0088CC",
+    "profile_sidebar_border_color": "C7C7C7",
+    "profile_sidebar_fill_color": "E0E0E0",
+    "profile_text_color": "333333",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": true,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "regular",
+    "withheld_in_countries": []
+}

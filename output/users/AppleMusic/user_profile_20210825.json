@@ -1,0 +1,142 @@
+{
+    "id": 74580436,
+    "id_str": "74580436",
+    "name": "Apple Music",
+    "screen_name": "AppleMusic",
+    "location": "Cupertino, CA",
+    "profile_location": null,
+    "description": "#BlackLivesMatter",
+    "url": "https://t.co/mJqJBe7vlU",
+    "entities": {
+        "url": {
+            "urls": [
+                {
+                    "url": "https://t.co/mJqJBe7vlU",
+                    "expanded_url": "http://apple.co/SUBSCRIBE",
+                    "display_url": "apple.co/SUBSCRIBE",
+                    "indices": [
+                        0,
+                        23
+                    ]
+                }
+            ]
+        },
+        "description": {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 9879029,
+    "friends_count": 2062,
+    "listed_count": 22024,
+    "created_at": "Tue Sep 15 22:49:25 +0000 2009",
+    "favourites_count": 359,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 36276,
+    "lang": null,
+    "status": {
+        "created_at": "Tue Aug 24 23:36:14 +0000 2021",
+        "id": 1430313027082018816,
+        "id_str": "1430313027082018816",
+        "text": ".@markhoppus talks with @blurofficial's @alexjameshq about the 30th anniversary of the band's debut LP, #Leisure.\u2026 https://t.co/nOBEbuYZuC",
+        "truncated": true,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "Leisure",
+                    "indices": [
+                        104,
+                        112
+                    ]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "markhoppus",
+                    "name": "\u03fb\ud835\udd1e\u24c7\ud835\udd28 \ud835\udc07\ud835\udc5c\u01a4\ud835\udc29\u0e22\ud835\udcfc",
+                    "id": 21955058,
+                    "id_str": "21955058",
+                    "indices": [
+                        1,
+                        12
+                    ]
+                },
+                {
+                    "screen_name": "blurofficial",
+                    "name": "blur",
+                    "id": 365445243,
+                    "id_str": "365445243",
+                    "indices": [
+                        24,
+                        37
+                    ]
+                },
+                {
+                    "screen_name": "alexjameshq",
+                    "name": "Alex James",
+                    "id": 288829295,
+                    "id_str": "288829295",
+                    "indices": [
+                        40,
+                        52
+                    ]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "https://t.co/nOBEbuYZuC",
+                    "expanded_url": "https://twitter.com/i/web/status/1430313027082018816",
+                    "display_url": "twitter.com/i/web/status/1\u2026",
+                    "indices": [
+                        115,
+                        138
+                    ]
+                }
+            ]
+        },
+        "source": "<a href=\"https://www.sprinklr.com\" rel=\"nofollow\">Sprinklr</a>",
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 5,
+        "favorite_count": 64,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "en"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "EAEAEA",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/1310656963223584768/hr40_0pb_normal.png",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1310656963223584768/hr40_0pb_normal.png",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/74580436/1623675682",
+    "profile_link_color": "0088CC",
+    "profile_sidebar_border_color": "C7C7C7",
+    "profile_sidebar_fill_color": "E0E0E0",
+    "profile_text_color": "333333",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": true,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "regular",
+    "withheld_in_countries": []
+}

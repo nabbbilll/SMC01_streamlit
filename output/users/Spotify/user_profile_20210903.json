@@ -1,0 +1,182 @@
+{
+    "id": 17230018,
+    "id_str": "17230018",
+    "name": "Spotify",
+    "screen_name": "Spotify",
+    "location": "",
+    "profile_location": null,
+    "description": "Listening is everything.\nPodcasts \ud83d\udc49 @SpotifyPodcasts\nLive audio \ud83d\udc49 @SpotifyGrnRoom\nSupport \ud83d\udc49 @SpotifyCares",
+    "url": "https://t.co/5G4Hekn0ea",
+    "entities": {
+        "url": {
+            "urls": [
+                {
+                    "url": "https://t.co/5G4Hekn0ea",
+                    "expanded_url": "http://Spotify.com",
+                    "display_url": "Spotify.com",
+                    "indices": [
+                        0,
+                        23
+                    ]
+                }
+            ]
+        },
+        "description": {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 4458463,
+    "friends_count": 17771,
+    "listed_count": 16577,
+    "created_at": "Fri Nov 07 12:14:28 +0000 2008",
+    "favourites_count": 13557,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 35831,
+    "lang": null,
+    "status": {
+        "created_at": "Thu Sep 02 19:53:40 +0000 2021",
+        "id": 1433518508063789056,
+        "id_str": "1433518508063789056",
+        "text": "May we proudly present, The @Olivia_Rodrigo Bridge \ud83e\udd7a https://t.co/MsR2U8s7lz",
+        "truncated": false,
+        "entities": {
+            "hashtags": [],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "Olivia_Rodrigo",
+                    "name": "Olivia Rodrigo",
+                    "id": 3213979153,
+                    "id_str": "3213979153",
+                    "indices": [
+                        28,
+                        43
+                    ]
+                }
+            ],
+            "urls": [],
+            "media": [
+                {
+                    "id": 1433517997386256387,
+                    "id_str": "1433517997386256387",
+                    "indices": [
+                        53,
+                        76
+                    ],
+                    "media_url": "http://pbs.twimg.com/media/E-ThBgVWUAMZHcB.jpg",
+                    "media_url_https": "https://pbs.twimg.com/media/E-ThBgVWUAMZHcB.jpg",
+                    "url": "https://t.co/MsR2U8s7lz",
+                    "display_url": "pic.twitter.com/MsR2U8s7lz",
+                    "expanded_url": "https://twitter.com/Spotify/status/1433518508063789056/photo/1",
+                    "type": "photo",
+                    "sizes": {
+                        "thumb": {
+                            "w": 150,
+                            "h": 150,
+                            "resize": "crop"
+                        },
+                        "small": {
+                            "w": 544,
+                            "h": 680,
+                            "resize": "fit"
+                        },
+                        "large": {
+                            "w": 1080,
+                            "h": 1350,
+                            "resize": "fit"
+                        },
+                        "medium": {
+                            "w": 960,
+                            "h": 1200,
+                            "resize": "fit"
+                        }
+                    }
+                }
+            ]
+        },
+        "extended_entities": {
+            "media": [
+                {
+                    "id": 1433517997386256387,
+                    "id_str": "1433517997386256387",
+                    "indices": [
+                        53,
+                        76
+                    ],
+                    "media_url": "http://pbs.twimg.com/media/E-ThBgVWUAMZHcB.jpg",
+                    "media_url_https": "https://pbs.twimg.com/media/E-ThBgVWUAMZHcB.jpg",
+                    "url": "https://t.co/MsR2U8s7lz",
+                    "display_url": "pic.twitter.com/MsR2U8s7lz",
+                    "expanded_url": "https://twitter.com/Spotify/status/1433518508063789056/photo/1",
+                    "type": "photo",
+                    "sizes": {
+                        "thumb": {
+                            "w": 150,
+                            "h": 150,
+                            "resize": "crop"
+                        },
+                        "small": {
+                            "w": 544,
+                            "h": 680,
+                            "resize": "fit"
+                        },
+                        "large": {
+                            "w": 1080,
+                            "h": 1350,
+                            "resize": "fit"
+                        },
+                        "medium": {
+                            "w": 960,
+                            "h": 1200,
+                            "resize": "fit"
+                        }
+                    }
+                }
+            ]
+        },
+        "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 842,
+        "favorite_count": 5383,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "en"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": true,
+    "profile_background_color": "FFFFFF",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme5/bg.gif",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme5/bg.gif",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/1013614110171250688/vrPUCDn2_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1013614110171250688/vrPUCDn2_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/17230018/1623868345",
+    "profile_link_color": "1ED760",
+    "profile_sidebar_border_color": "000000",
+    "profile_sidebar_fill_color": "ECEBE8",
+    "profile_text_color": "458DBF",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": true,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "none",
+    "withheld_in_countries": []
+}
