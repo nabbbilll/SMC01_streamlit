@@ -3,7 +3,6 @@ numpy
 streamlit
 altair
 pytz
-json == 2.0.9
 datetime
 time
 math
