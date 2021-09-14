@@ -47,7 +47,7 @@ st.header(f"{accName} Dashboard KPI")
 
 # Initializae start date and end date to read the json files
 startDate = datetime.datetime(2021, 8, 25)
-endDate = datetime.datetime(2021, 9, 12)
+endDate = datetime.datetime(2021, 8, 31)
 
 user_Spotify = func.getuserProfile("Spotify", startDate, endDate)
 followers_Spotify = func.getfollowersProfile("Spotify", endDate)
