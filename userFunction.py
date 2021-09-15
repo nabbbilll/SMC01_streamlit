@@ -7,6 +7,7 @@ import json
 import datetime
 import time
 import math
+from collections import Counter
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -19,6 +20,16 @@ def getDate(endDate):
     date_today = today.strftime("%Y-%m-%d")
     date_yesterday = yesterday.strftime("%Y-%m-%d")
     return date_today, date_yesterday
+
+@st.cache(suppress_st_warning=True, allow_output_mutation=True)
+def getprofileImg(screen_name, endDate):
+    endDate = endDate.strftime("%Y%m%d")
+    f_name = "output/users/{}/user_profile_{}.json".format(screen_name, endDate)
+    with open(f_name) as f:
+        profile = json.load(f)
+        img = (profile['profile_image_url_https'])
+    img = img.replace('_normal', '')
+    return img
 
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
 def getuserProfile(screen_name, startDate, endDate):
@@ -115,6 +126,69 @@ def getfriendsProfile(screen_name, endDate):
     df_friends['created_at'] = df_friends['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
     return df_friends
 
+@st.cache(suppress_st_warning=True, allow_output_mutation=True)
+def getuserTimeline(screen_name, endDate):
+    endDate = endDate.strftime("%Y%m%d")
+    timeline_file = "output/user_timeline_{}_{}.json".format(screen_name, endDate)
+    with open(timeline_file) as f1:
+        created_at = []
+        retweet_count = []
+        tweet_text = []
+        hashtags = []
+        media_type = []
+        user_mention = []
+        urls = []
+        quote_retweet_status = []
+        for line in f1:
+            tweet = json.loads(line)
+            retweet_count.append(tweet['retweet_count'])
+            tweet_text.append(tweet['text'])
+            created_at.append(tweet['created_at'])
+            # if hashtags included in the tweet or not
+            if (len(tweet['entities']['hashtags']) != 0):
+                hashtags.append("True")
+            else:
+                hashtags.append("False")
+            # type of media included in the tweet
+            if ("extended_entities" in tweet):
+                if (tweet['extended_entities']['media'][0].get('type') == "photo"):
+                    media_type.append("photo")
+                elif (tweet['extended_entities']['media'][0].get('type') == "video"):
+                    media_type.append("video")
+                elif (tweet['extended_entities']['media'][0].get('type') == "animated_gif"):
+                    media_type.append("animated_gif")
+            else:
+                media_type.append("no_media")
+            # is there any user mentioned in the tweet
+            if (len(tweet['entities']['user_mentions']) != 0):
+                user_mention.append([tweet['entities']['user_mentions'][0]["screen_name"]])
+            else:
+                user_mention.append([])
+            # if there is link included in the tweet
+            if (len(tweet['entities']['urls']) != 0):
+                urls.append("True")
+            else:
+                urls.append("False")
+            # if the tweet is the quote retweet from other tweet or not
+            if (tweet['is_quote_status'] == True):
+                quote_retweet_status.append("True")
+            else:
+                quote_retweet_status.append("False")
+    df_timeline = pd.DataFrame(columns=['tweet_content', 'created_at', 'retweet_count', 'hashtags', 'media_type', 'user_mention', 'urls',
+                               'quote_retweet_status'])
+    df_timeline['tweet_content'] = tweet_text
+    df_timeline['created_at'] = created_at
+    df_timeline['retweet_count'] = retweet_count
+    df_timeline['hashtags'] = hashtags
+    df_timeline['media_type'] = media_type
+    df_timeline['user_mention'] = user_mention
+    df_timeline['urls'] = urls
+    df_timeline['quote_retweet_status'] = quote_retweet_status
+    df_timeline['created_at'] = df_timeline['created_at'].astype('datetime64')
+    df_timeline['created_at'] = df_timeline['created_at'].dt.tz_localize('UTC')
+    df_timeline['created_at'] = df_timeline['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
+    return df_timeline
+
 
 def getKPI(df, date_today, date_yesterday):
     followers_num_today = df.loc[df['date'] == date_today, 'followers_count'].iloc[0]
@@ -138,6 +212,15 @@ def getKPI(df, date_today, date_yesterday):
     fav_diff = int(fav_num_today) - int(fav_num_yesterday)
 
     return followers_num, followers_diff, friends_num, friends_diff, tweet_num, tweet_diff, fav_num, fav_diff
+
+def get_topMention(df):
+    top_mention = Counter()
+    for i, row in df.iterrows():
+        top_mention.update(row['user_mention'])
+    num = 1
+    for user, count in top_mention.most_common(5):
+        st.write(f"({num}) @{user}:{count}")
+        num += 1
 
 def followers_demographic(screen_name, df, freq):
     df["count"] = 1
@@ -261,7 +344,7 @@ def growthRate(screen_name, df, avg_rate, startDate_select, endDate_select):
 
     # Draw text labels near the points, and highlight based on selection
     text = bar1.mark_text(align='left', dx=5, dy=-5).encode(
-        text=alt.condition(nearest, 'average_GR', alt.value(' '))
+        text=alt.condition(nearest, y_label, alt.value(' '))
     )
 
     # Draw a rule at the location of the selection
