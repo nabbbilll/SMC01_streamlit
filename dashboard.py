@@ -15,6 +15,8 @@ warnings.filterwarnings('ignore')
 
 
 ######################################################################################
+st.set_page_config(page_title="SMC Dashboard", page_icon=":desktop_computer:", layout="wide", initial_sidebar_state="auto")
+
 # Initializae start date and end date to read the json files
 startDate = datetime.datetime(2021, 8, 25)
 endDate = datetime.datetime(2021, 9, 15)
@@ -42,6 +44,9 @@ accName = st.sidebar.selectbox(
     help="Choose Social Media account"
 )
 
+topMention_num = st.sidebar.slider("Display how many top mention users?", min_value=0, max_value=10, value=3)
+topHashtag_num = st.sidebar.slider("Display how many top hashtags?", min_value=0, max_value=10, value=3)
+
 startDate_select = st.sidebar.date_input("Start Date:", value=datetime.date(2021, 8, 25),
                                          min_value=datetime.date(2021, 8, 25), max_value=datetime.date.today(),
                                          help="Select the start date for visualization")
@@ -63,11 +68,6 @@ avg_rate = st.sidebar.selectbox(
 )
 
 st.title("Social Media Computing Assignment 1")
-
-# st.write(f"Selected Start Date: {startDate}")
-# st.write(f"Selected End Date: {endDate}")
-
-# st.write(f"{accName} DataFrame:")
 
 # Assign selected account as target and others as competitor
 if accName == "Spotify":
@@ -122,47 +122,46 @@ elif accName == "YoutubeMusic":
     timeline_competitor1 = timeline_AppleMusic
     timeline_competitor2 = timeline_Spotify
 
-title_container = st.container()
 acc_img, acc_title = st.columns([1, 10])
-with title_container:
-    with acc_img:
-        st.markdown(
-            """
-            <style>
-            .container {
-                display: flex;
-            }
-            .logo-img {
-                float:right;
-                width: 80px;
-                height:80px;
-            }
-            .logo-text {
-                font-weight:50px;
-                font-size:40px;
-                padding-top: 25px;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
+with acc_img:
+    st.markdown(
+        """
+        <style>
+        .container {
+            display: flex;
+        }
+        .logo-img {
+            float:right;
+            width: 80px;
+            height:80px;
+        }
+        .logo-text {
+            font-weight:50px;
+            font-size:40px;
+            padding-top: 25px;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown(
+        f"""
+        <div class="container">
+            <img class="logo-img" src="{img_target}">
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+with acc_title:
+    st.markdown(
+        f"""
+                <div class="container">
+                    <p class="logo-text"> {accName} Dashboard KPI</p>
+                </div>
+                """,
+        unsafe_allow_html=True
         )
-        st.markdown(
-            f"""
-            <div class="container">
-                <img class="logo-img" src="{img_target}">
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    with acc_title:
-        st.markdown(
-            f"""
-                    <div class="container">
-                        <p class="logo-text"> {accName} Dashboard KPI</p>
-                    </div>
-                    """,
-            unsafe_allow_html=True
-        )
+
 func.emptyLine()
 
 #df_target
@@ -188,9 +187,14 @@ col_topMention, col = st.columns(2)
 with col_topMention:
     #display more beautiful or change to table
     st.subheader(f"{accName}'s Top Mentions")
-    func.get_topMention(timeline_target)
+    topMention_df = func.get_topMention(timeline_target)
+    topMention_df = topMention_df.loc[:topMention_num - 1, :]
+    topMention_df
 with col:
-    st.write("empty")
+    st.subheader(f"{accName}'s Top Hashtags")
+    topHashtag_df = func.get_topHashtag(timeline_target)
+    topHashtag_df = topHashtag_df.loc[:topHashtag_num - 1, :]
+    topHashtag_df
 
 func.emptyLine()
 

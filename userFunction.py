@@ -146,9 +146,9 @@ def getuserTimeline(screen_name, endDate):
             created_at.append(tweet['created_at'])
             # if hashtags included in the tweet or not
             if (len(tweet['entities']['hashtags']) != 0):
-                hashtags.append("True")
+                hashtags.append([tweet['entities']['hashtags'][0]["text"]])
             else:
-                hashtags.append("False")
+                hashtags.append([])
             # type of media included in the tweet
             if ("extended_entities" in tweet):
                 if (tweet['extended_entities']['media'][0].get('type') == "photo"):
@@ -217,10 +217,34 @@ def get_topMention(df):
     top_mention = Counter()
     for i, row in df.iterrows():
         top_mention.update(row['user_mention'])
-    num = 1
-    for user, count in top_mention.most_common(5):
-        st.write(f"({num}) @{user}:{count}")
-        num += 1
+    user_arr = []
+    count_arr = []
+    for user, count in top_mention.most_common(10):
+        user = "@" + user
+        user_arr.append(user)
+        count_arr.append(count)
+    df = pd.DataFrame({
+        'user': user_arr,
+        'count': count_arr
+    })
+    return df
+
+def get_topHashtag(df):
+    top_hashtag = Counter()
+    for i, row in df.iterrows():
+        top_hashtag.update(row['hashtags'])
+    hashtag_arr = []
+    count_arr = []
+    for hashtag, count in top_hashtag.most_common(10):
+        hashtag = "#" + hashtag
+        hashtag_arr.append(hashtag)
+        count_arr.append(count)
+    df = pd.DataFrame({
+        'hashtag': hashtag_arr,
+        'count': count_arr
+    })
+    return df
+
 
 def followers_demographic(screen_name, df, freq):
     df["count"] = 1
