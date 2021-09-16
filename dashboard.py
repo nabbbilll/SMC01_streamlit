@@ -19,7 +19,7 @@ st.set_page_config(page_title="SMC Dashboard", page_icon=":desktop_computer:", l
 
 # Initializae start date and end date to read the json files
 startDate = datetime.datetime(2021, 8, 25)
-endDate = datetime.datetime(2021, 9, 15)
+endDate = datetime.datetime(2021, 9, 16)
 #user profile, followers, friends and timeline
 user_Spotify = func.getuserProfile("Spotify", startDate, endDate)
 followers_Spotify = func.getfollowersProfile("Spotify", endDate)
@@ -43,16 +43,11 @@ accName = st.sidebar.selectbox(
     ['Spotify', 'AppleMusic', 'YoutubeMusic'],
     help="Choose Social Media account"
 )
-
-topMention_num = st.sidebar.slider("Display how many top mention users?", min_value=0, max_value=10, value=3)
-topHashtag_num = st.sidebar.slider("Display how many top hashtags?", min_value=0, max_value=10, value=3)
-
 startDate_select = st.sidebar.date_input("Start Date:", value=datetime.date(2021, 8, 25),
                                          min_value=datetime.date(2021, 8, 25), max_value=datetime.date.today(),
                                          help="Select the start date for visualization")
 endDate_select = st.sidebar.date_input("End Date:", min_value=datetime.date(2021, 8, 25),
                                        max_value=datetime.date.today(), help="Select the end date for visualization")
-
 if startDate_select > endDate_select:
     st.error("Selected start date is larger than the selected end date")
 
@@ -183,18 +178,53 @@ with col_2:
 
 func.emptyLine()
 
-col_topMention, col = st.columns(2)
+col_topMention, col_topHashtag = st.columns(2)
 with col_topMention:
-    #display more beautiful or change to table
+    topMention_num = st.slider("Display how many top mention users?", min_value=0, max_value=10, value=3)
     st.subheader(f"{accName}'s Top Mentions")
     topMention_df = func.get_topMention(timeline_target)
     topMention_df = topMention_df.loc[:topMention_num - 1, :]
     topMention_df
-with col:
+with col_topHashtag:
+    topHashtag_num = st.slider("Display how many top hashtags?", min_value=0, max_value=10, value=3)
     st.subheader(f"{accName}'s Top Hashtags")
     topHashtag_df = func.get_topHashtag(timeline_target)
     topHashtag_df = topHashtag_df.loc[:topHashtag_num - 1, :]
     topHashtag_df
+
+func.emptyLine()
+
+col_TweetType, col_temp2 = st.columns(2)
+with col_TweetType:
+    st.subheader(f"{accName}'s Average Engagement Based on tweet type")
+    days_select_E1 = st.number_input("Enter number of days:", min_value=0, value=7, step=1, key="num_tweetType_days")
+    engagement_tweetType_df = func.engagement_tweetType(timeline_target, days_select_E1)
+    TWEET_TYPE = engagement_tweetType_df['Tweet_Type'].unique()
+    TWEET_TYPE_SELECTED = st.multiselect("Select the Tweet Type",TWEET_TYPE, default=TWEET_TYPE)
+    ENGAGEMENT_TYPE_1 = engagement_tweetType_df['Engagement'].unique()
+    ENGAGEMENT_SELECTED_1 = st.multiselect("Select the Engagements", ENGAGEMENT_TYPE_1, default=ENGAGEMENT_TYPE_1, key="select_tweetType_engagement")
+    st.write(f"The average engagement for the last {days_select_E1} days")
+    mask_tweetType = engagement_tweetType_df['Tweet_Type'].isin(TWEET_TYPE_SELECTED)
+    engagement_tweetType_df = engagement_tweetType_df[mask_tweetType]
+    mask_Engagement = engagement_tweetType_df['Engagement'].isin(ENGAGEMENT_SELECTED_1)
+    engagement_tweetType_df = engagement_tweetType_df[mask_Engagement]
+    engagement_tweetType_df
+
+with col_temp2:
+    st.subheader(f"{accName}'s Average Engagement Based on Time Posted")
+    days_select_E2 = st.number_input("Enter number of days:", min_value=0, value=7, step=1, key="num_time_days")
+    engagement_time_df = func.engagement_timeBin(timeline_target, days_select_E2)
+    TIME_BIN = engagement_time_df['Time_Bin'].unique()
+    TIME_BIN_SELECTED = st.multiselect("Select the Time Bin", options=TIME_BIN, default=TIME_BIN)
+    ENGAGEMENT_TYPE_2 = engagement_time_df['Engagement'].unique()
+    ENGAGEMENT_SELECTED_2 = st.multiselect("Select the Engagements", ENGAGEMENT_TYPE_2, default=ENGAGEMENT_TYPE_2, key="select_time_engagement")
+    st.write(f"The average engagement for the last {days_select_E2} days")
+    mask_timeBin = engagement_time_df['Time_Bin'].isin(TIME_BIN_SELECTED)
+    engagement_time_df = engagement_time_df[mask_tweetType]
+    mask_Engagement = engagement_time_df['Engagement'].isin(ENGAGEMENT_SELECTED_2)
+    engagement_time_df = engagement_time_df[mask_Engagement]
+    engagement_time_df
+
 
 func.emptyLine()
 

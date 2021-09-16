@@ -133,6 +133,7 @@ def getuserTimeline(screen_name, endDate):
     with open(timeline_file) as f1:
         created_at = []
         retweet_count = []
+        favorite_count = []
         tweet_text = []
         hashtags = []
         media_type = []
@@ -142,6 +143,7 @@ def getuserTimeline(screen_name, endDate):
         for line in f1:
             tweet = json.loads(line)
             retweet_count.append(tweet['retweet_count'])
+            favorite_count.append(tweet['favorite_count'])
             tweet_text.append(tweet['text'])
             created_at.append(tweet['created_at'])
             # if hashtags included in the tweet or not
@@ -174,16 +176,17 @@ def getuserTimeline(screen_name, endDate):
                 quote_retweet_status.append("True")
             else:
                 quote_retweet_status.append("False")
-    df_timeline = pd.DataFrame(columns=['tweet_content', 'created_at', 'retweet_count', 'hashtags', 'media_type', 'user_mention', 'urls',
-                               'quote_retweet_status'])
-    df_timeline['tweet_content'] = tweet_text
-    df_timeline['created_at'] = created_at
-    df_timeline['retweet_count'] = retweet_count
-    df_timeline['hashtags'] = hashtags
-    df_timeline['media_type'] = media_type
-    df_timeline['user_mention'] = user_mention
-    df_timeline['urls'] = urls
-    df_timeline['quote_retweet_status'] = quote_retweet_status
+    df_timeline = pd.DataFrame({
+        'tweet_content':tweet_text,
+        'created_at':created_at,
+        'retweet_count':retweet_count,
+        'favorite_count':favorite_count,
+        'hashtags':hashtags,
+        'media_type':media_type,
+        'user_mention':user_mention,
+        'urls':urls,
+        'quote_retweet_status':quote_retweet_status
+    })
     df_timeline['created_at'] = df_timeline['created_at'].astype('datetime64')
     df_timeline['created_at'] = df_timeline['created_at'].dt.tz_localize('UTC')
     df_timeline['created_at'] = df_timeline['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
@@ -384,3 +387,90 @@ def growthRate(screen_name, df, avg_rate, startDate_select, endDate_select):
         grid=False
     )
     return st.altair_chart(layer, use_container_width=True)
+
+def engagement_tweetType(df, days_select):
+    df.loc[df['media_type'] == "no_media", 'media_type'] = "text_only"
+    df.loc[df['media_type'] == "photo", 'media_type'] = "text_and_photo"
+    df.loc[df['media_type'] == "video", 'media_type'] = "text_and_video"
+    df.loc[df['media_type'] == "animated_gif", 'media_type'] = "text_and_animated_gif"
+    endDate = datetime.datetime.now()
+    startDate = endDate - datetime.timedelta(days=days_select)
+    df = df.loc[:,['created_at','retweet_count','favorite_count','media_type']]
+    df['created_at'] = pd.to_datetime(df.created_at).dt.tz_localize(None)
+    mask = (df['created_at'] >= startDate) & (df['created_at'] <= endDate)
+    df = df.loc[mask]
+    df = df.rename(columns={'media_type': 'tweet_type'})
+    df = df.groupby(['tweet_type']).agg(['sum', 'count'])
+    df.reset_index(inplace=True)
+
+    df['retweet_average'] = df['retweet_count']['sum'] / df['retweet_count']['count']
+    df['favorite_average'] = df['favorite_count']['sum'] / df['favorite_count']['count']
+    df.drop(columns = ['retweet_count', 'favorite_count'], axis=1, inplace=True)
+    df = df.melt(id_vars='tweet_type').rename(columns=str.title)
+    df.drop(columns = ['Variable_1'], axis=1, inplace=True)
+    df.rename(columns={'Variable_0': 'Engagement'}, inplace=True)
+    df['Value'] = df['Value'].round()
+
+    if ('text_only' not in df['Tweet_Type']) and ('retweet_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_only', 'retweet_average', 0]
+    if ('text_only' not in df['Tweet_Type']) and ('favorite_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_only', 'favorite_average', 0]
+    if ('text_and_video' not in df['Tweet_Type']) and ('retweet_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_and_video', 'retweet_average', 0]
+    if ('text_and_video' not in df['Tweet_Type']) and ('favorite_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_and_video', 'favorite_average', 0]
+    if ('text_and_photo' not in df['Tweet_Type']) and ('retweet_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_and_photo', 'retweet_average', 0]
+    if ('text_and_photo' not in df['Tweet_Type']) and ('favorite_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_and_photo', 'favorite_average', 0]
+    if ('text_and_animated_gif' not in df['Tweet_Type']) and ('retweet_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_and_animated_gif', 'retweet_average', 0]
+    if ('text_and_animated_gif' not in df['Tweet_Type']) and ('favorite_average' not in df['Engagement']):
+        df.loc[len(df.index)] = ['text_and_animated_gif', 'favorite_average', 0]
+    df.drop_duplicates(subset=['Tweet_Type', 'Engagement'], inplace=True)
+
+    df.sort_values(by="Tweet_Type", inplace=True, ascending=False)
+    df.reset_index(inplace=True, drop=True)
+    return df
+
+def engagement_timeBin(df, days_select):
+    endDate = datetime.datetime.now()
+    startDate = endDate - datetime.timedelta(days=days_select)
+
+    # define the bins
+    # reference: https://www.learnersdictionary.com/qa/parts-of-the-day-early-morning-late-morning-etc
+    bins = [0, 5, 12, 17, 21, 24]
+    # add custom labels if desired
+    labels = ['night_1', 'morning', 'afternoon', 'evening', 'night']
+
+    df = df.loc[:, ['created_at', 'retweet_count', 'favorite_count', 'tweet_content']]
+    df['time_bin'] = pd.cut(df.created_at.dt.hour, bins, labels=labels, right=False)
+    df = df.loc[(df['favorite_count'] != 0) | (~df['tweet_content'].str.contains("RT"))]
+    df.drop(columns=['tweet_content'], axis=1, inplace=True)
+    df['time_bin'] = df['time_bin'].replace({'night_1': 'night'})
+    df['created_at'] = pd.to_datetime(df.created_at).dt.tz_localize(None)
+    mask = (df['created_at'] >= startDate) & (df['created_at'] <= endDate)
+    df = df.loc[mask]
+
+    df = df.groupby(['time_bin']).agg(['sum', 'count'])
+    df.reset_index(inplace=True)
+
+    df['retweet_average'] = df['retweet_count']['sum'] / df['retweet_count']['count']
+    df['favorite_average'] = df['favorite_count']['sum'] / df['favorite_count']['count']
+    df.drop(columns=['retweet_count', 'favorite_count'], axis=1, inplace=True)
+    df = df.melt(id_vars='time_bin').rename(columns=str.title)
+    df.drop(columns=['Variable_1'], axis=1, inplace=True)
+    df.rename(columns={'Variable_0': 'Engagement'}, inplace=True)
+    df['Value'] = df['Value'].fillna(0)
+    df['Value'] = df['Value'].round()
+
+    df_mapping = pd.DataFrame({
+        'time_bin': ['morning', 'afternoon', 'evening', 'night'],
+    })
+    sort_mapping = df_mapping.reset_index().set_index('time_bin')
+    df['time_bin_num'] = df['Time_Bin'].map(sort_mapping['index'])
+    df.sort_values(by='time_bin_num', inplace=True, ascending=True)
+    df.drop(['time_bin_num'], axis=1, inplace=True)
+    df.reset_index(inplace=True, drop=True)
+    df['Time_Bin'] = df['Time_Bin'].astype('str')
+    return df
