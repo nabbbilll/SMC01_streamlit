@@ -1,0 +1,184 @@
+{
+    "id": 17230018,
+    "id_str": "17230018",
+    "name": "Spotify",
+    "screen_name": "Spotify",
+    "location": "",
+    "profile_location": null,
+    "description": "Listening is everything.\nPodcasts \ud83d\udc49 @SpotifyPodcasts\nLive audio \ud83d\udc49 @SpotifyGrnRoom\nSupport \ud83d\udc49 @SpotifyCares",
+    "url": "https://t.co/5G4Hekn0ea",
+    "entities": {
+        "url": {
+            "urls": [
+                {
+                    "url": "https://t.co/5G4Hekn0ea",
+                    "expanded_url": "http://Spotify.com",
+                    "display_url": "Spotify.com",
+                    "indices": [
+                        0,
+                        23
+                    ]
+                }
+            ]
+        },
+        "description": {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 4510242,
+    "friends_count": 17766,
+    "listed_count": 16641,
+    "created_at": "Fri Nov 07 12:14:28 +0000 2008",
+    "favourites_count": 13669,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 36043,
+    "lang": null,
+    "status": {
+        "created_at": "Fri Oct 01 22:47:05 +0000 2021",
+        "id": 1444071397211451406,
+        "id_str": "1444071397211451406",
+        "text": "RT @SpotifyUSA: We're serving up this week's releases... careful they're hot \ud83d\udd25\n\nEverything's better now that @KALIUCHIS and @sza are togeth\u2026",
+        "truncated": false,
+        "entities": {
+            "hashtags": [],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "SpotifyUSA",
+                    "name": "Spotify USA",
+                    "id": 213687893,
+                    "id_str": "213687893",
+                    "indices": [
+                        3,
+                        14
+                    ]
+                },
+                {
+                    "screen_name": "KALIUCHIS",
+                    "name": "KALI UCHIS",
+                    "id": 598946691,
+                    "id_str": "598946691",
+                    "indices": [
+                        109,
+                        119
+                    ]
+                },
+                {
+                    "screen_name": "sza",
+                    "name": "SZA",
+                    "id": 256883252,
+                    "id_str": "256883252",
+                    "indices": [
+                        124,
+                        128
+                    ]
+                }
+            ],
+            "urls": []
+        },
+        "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "retweeted_status": {
+            "created_at": "Fri Oct 01 20:50:12 +0000 2021",
+            "id": 1444041981617975305,
+            "id_str": "1444041981617975305",
+            "text": "We're serving up this week's releases... careful they're hot \ud83d\udd25\n\nEverything's better now that @KALIUCHIS and @sza ar\u2026 https://t.co/POjArMRxDp",
+            "truncated": true,
+            "entities": {
+                "hashtags": [],
+                "symbols": [],
+                "user_mentions": [
+                    {
+                        "screen_name": "KALIUCHIS",
+                        "name": "KALI UCHIS",
+                        "id": 598946691,
+                        "id_str": "598946691",
+                        "indices": [
+                            93,
+                            103
+                        ]
+                    },
+                    {
+                        "screen_name": "sza",
+                        "name": "SZA",
+                        "id": 256883252,
+                        "id_str": "256883252",
+                        "indices": [
+                            108,
+                            112
+                        ]
+                    }
+                ],
+                "urls": [
+                    {
+                        "url": "https://t.co/POjArMRxDp",
+                        "expanded_url": "https://twitter.com/i/web/status/1444041981617975305",
+                        "display_url": "twitter.com/i/web/status/1\u2026",
+                        "indices": [
+                            117,
+                            140
+                        ]
+                    }
+                ]
+            },
+            "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+            "in_reply_to_status_id": null,
+            "in_reply_to_status_id_str": null,
+            "in_reply_to_user_id": null,
+            "in_reply_to_user_id_str": null,
+            "in_reply_to_screen_name": null,
+            "geo": null,
+            "coordinates": null,
+            "place": null,
+            "contributors": null,
+            "is_quote_status": false,
+            "retweet_count": 47,
+            "favorite_count": 334,
+            "favorited": false,
+            "retweeted": false,
+            "possibly_sensitive": false,
+            "lang": "en"
+        },
+        "is_quote_status": false,
+        "retweet_count": 47,
+        "favorite_count": 0,
+        "favorited": false,
+        "retweeted": false,
+        "lang": "en"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": true,
+    "profile_background_color": "FFFFFF",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme5/bg.gif",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme5/bg.gif",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/1013614110171250688/vrPUCDn2_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1013614110171250688/vrPUCDn2_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/17230018/1633004005",
+    "profile_link_color": "1ED760",
+    "profile_sidebar_border_color": "000000",
+    "profile_sidebar_fill_color": "ECEBE8",
+    "profile_text_color": "458DBF",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": true,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "none",
+    "withheld_in_countries": []
+}

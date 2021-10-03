@@ -8,6 +8,7 @@ import datetime
 import time
 import math
 from collections import Counter
+from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -69,22 +70,29 @@ def getuserProfile(screen_name, startDate, endDate):
     return df
 
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
-def getfollowersProfile(screen_name, endDate):
-    date_time_convert = endDate.strftime("%Y%m%d")
-    f_name = "output/users/{}/followers_{}.json".format(screen_name, date_time_convert)
+def getfollowersProfile(accName, startDate, endDate):
+    arr_date = []
+    rng = pd.date_range(startDate, endDate, freq='D')
+    for i, x in enumerate(rng):
+        x = x.strftime("%Y%m%d")
+        arr_date.append(x)
+
     screen_name = []
     followers_count = []
     friends_count = []
     created_at = []
     tweet_count = []
-    with open(f_name, 'r') as f:
-        for line in f:
-            profile = json.loads(line)
-            screen_name.append(profile["screen_name"])
-            friends_count.append(profile['friends_count'])
-            followers_count.append(profile['followers_count'])
-            created_at.append(profile['created_at'])
-            tweet_count.append(profile['statuses_count'])
+    for x in arr_date:
+        f_name = "output/users/{}/followers_{}.json".format(accName, x)
+        if Path(f_name).is_file():
+            with open(f_name, 'r') as f:
+                for line in f:
+                    profile = json.loads(line)
+                    screen_name.append(profile["screen_name"])
+                    friends_count.append(profile['friends_count'])
+                    followers_count.append(profile['followers_count'])
+                    created_at.append(profile['created_at'])
+                    tweet_count.append(profile['statuses_count'])
     df_followers = pd.DataFrame({
         'followers_screen_name': screen_name,
         'created_at': created_at,
@@ -95,25 +103,36 @@ def getfollowersProfile(screen_name, endDate):
     df_followers['created_at'] = df_followers['created_at'].astype('datetime64')
     df_followers['created_at'] = df_followers['created_at'].dt.tz_localize('UTC')
     df_followers['created_at'] = df_followers['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
+    df_followers.drop_duplicates(subset=['followers_screen_name'], keep='last', inplace=True, ignore_index=True)
+    mask = (df_followers['created_at'] >= '2006-1-1')
+    df_followers = df_followers.loc[mask]
+    df_followers.reset_index(inplace=True, drop=True)
     return df_followers
 
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
-def getfriendsProfile(screen_name, endDate):
-    date_time_convert = endDate.strftime("%Y%m%d")
-    f_name = "output/users/{}/friends_{}.json".format(screen_name, date_time_convert)
+def getfriendsProfile(accName, startDate, endDate):
+    arr_date = []
+    rng = pd.date_range(startDate, endDate, freq='D')
+    for i, x in enumerate(rng):
+        x = x.strftime("%Y%m%d")
+        arr_date.append(x)
+
     screen_name = []
     followers_count = []
     friends_count = []
     created_at = []
     tweet_count = []
-    with open(f_name, 'r') as f:
-        for line in f:
-            profile = json.loads(line)
-            screen_name.append(profile["screen_name"])
-            friends_count.append(profile['friends_count'])
-            followers_count.append(profile['followers_count'])
-            created_at.append(profile['created_at'])
-            tweet_count.append(profile['statuses_count'])
+    for x in arr_date:
+        f_name = "output/users/{}/friends_{}.json".format(accName, x)
+        if Path(f_name).is_file():
+            with open(f_name, 'r') as f:
+                for line in f:
+                    profile = json.loads(line)
+                    screen_name.append(profile["screen_name"])
+                    friends_count.append(profile['friends_count'])
+                    followers_count.append(profile['followers_count'])
+                    created_at.append(profile['created_at'])
+                    tweet_count.append(profile['statuses_count'])
     df_friends = pd.DataFrame({
         'friends_screen_name': screen_name,
         'created_at': created_at,
@@ -124,6 +143,10 @@ def getfriendsProfile(screen_name, endDate):
     df_friends['created_at'] = df_friends['created_at'].astype('datetime64')
     df_friends['created_at'] = df_friends['created_at'].dt.tz_localize('UTC')
     df_friends['created_at'] = df_friends['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
+    df_friends.drop_duplicates(subset=['friends_screen_name'], keep='last', inplace=True, ignore_index=True)
+    mask = (df_friends['created_at'] >= '2006-1-1')
+    df_friends = df_friends.loc[mask]
+    df_friends.reset_index(inplace=True, drop=True)
     return df_friends
 
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)
@@ -192,6 +215,59 @@ def getuserTimeline(screen_name, endDate):
     df_timeline['created_at'] = df_timeline['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
     return df_timeline
 
+@st.cache(suppress_st_warning=True, allow_output_mutation=True)
+def getmutualFriends(df_friends, df_followers):
+    df1 = df_friends.copy()
+    df1.rename(columns={
+        'friends_screen_name': 'screen_name'
+    }, inplace=True)
+    df2 = df_followers.copy()
+    df2.rename(columns={
+        'followers_screen_name': 'screen_name'
+    }, inplace=True)
+    df = pd.merge(df1, df2, how='inner', on=['screen_name'])
+    df.drop(columns=['created_at_y', 'friends_count_y', 'followers_count_y', 'tweet_count_y'], inplace=True)
+    df.rename(columns={
+        'created_at_x': 'created_at',
+        'friends_count_x': 'friends_count',
+        'followers_count_x': 'followers_count',
+        'tweet_count_x': 'tweet_count'
+    }, inplace=True)
+    return df
+
+
+def getbrand_Mention(screen_name, startDate, endDate):
+    arr_date = []
+    rng = pd.date_range(startDate, endDate, freq='D')
+    for i, x in enumerate(rng):
+        x = x.strftime("%Y%m%d")
+        arr_date.append(x)
+
+    tweet_text = []
+    created_at = []
+    retweet_count = []
+    favorite_count = []
+    for x in arr_date:
+        f_name = "output/brand_mentions/brand_mention_{}_{}.json".format(screen_name,x)
+        if Path(f_name).is_file():
+            with open(f_name) as f:
+                for line in f:
+                    tweet = json.loads(line)
+                    tweet_text.append(tweet['text'])
+                    created_at.append(tweet['created_at'])
+                    retweet_count.append(tweet['retweet_count'])
+                    favorite_count.append(tweet['favorite_count'])
+    df = pd.DataFrame({'tweet_text': tweet_text,
+                       'created_at': created_at,
+                       'retweet_count': retweet_count,
+                       'favorite_count': favorite_count
+                       })
+    df['created_at'] = df['created_at'].astype('datetime64')
+    df['created_at'] = df['created_at'].dt.tz_localize('UTC')
+    df['created_at'] = df['created_at'].dt.tz_convert(pytz.timezone('Asia/Kuala_Lumpur'))
+    df.drop_duplicates(subset=['tweet_text'], keep='last', inplace=True, ignore_index=True)
+    df.reset_index(inplace=True, drop=True)
+    return df
 
 def getKPI(df, date_today, date_yesterday):
     followers_num_today = df.loc[df['date'] == date_today, 'followers_count'].iloc[0]
@@ -248,11 +324,30 @@ def get_topHashtag(df):
     })
     return df
 
+def get_topFollowerDoC(df_followers):
+    df = df_followers.copy()
+    df['count'] = df['friends_count'] + df['followers_count']
+    df.drop(columns=['created_at','friends_count','followers_count','tweet_count'],inplace=True)
+    df.sort_values(by='count', inplace=True, ascending=False)
+    df.reset_index(inplace=True, drop=True)
+    return df
 
-def followers_demographic(screen_name, df, freq):
+def get_topFriendDoC(df_friends):
+    df = df_friends.copy()
+    df['count'] = df['friends_count'] + df['followers_count']
+    df.drop(columns=['created_at', 'friends_count', 'followers_count', 'tweet_count'], inplace=True)
+    df.sort_values(by='count', inplace=True, ascending=False)
+    df.reset_index(inplace=True, drop=True)
+    return df
+
+def profileDemographic(screen_name, df_followers, df_friends, option, freq):
+    if option == "followers":
+        df = df_followers.copy()
+        df = df.drop(['followers_screen_name', 'friends_count', 'followers_count', 'tweet_count'], axis=1)
+    elif option == "friends":
+        df = df_friends.copy()
+        df = df.drop(['friends_screen_name', 'friends_count', 'followers_count', 'tweet_count'], axis=1)
     df["count"] = 1
-    df = df.drop(['followers_screen_name','friends_count','followers_count','tweet_count'], axis=1)
-    df = df.sort_values(by='created_at', ascending=True).reset_index(drop=True)
     df = df.sort_values(by='created_at', ascending=True).reset_index(drop=True)
     df_new = df.copy()
     df_new['created_at'] = df_new['created_at'].dt.to_period(freq)
@@ -273,9 +368,12 @@ def followers_demographic(screen_name, df, freq):
     result["count"] = result["count"].astype("int")
     result = result.drop(['count_x', 'count_y'], axis=1)
 
-    bars = alt.Chart(result).mark_bar().encode(
+    bars = alt.Chart(result).mark_bar(
+        cornerRadiusTopLeft=3,
+        cornerRadiusTopRight=3
+    ).encode(
         x='count',
-        y="created_at",
+        y='created_at'
     ).properties(
         title=f"{screen_name} followers account created"
     )
@@ -283,7 +381,8 @@ def followers_demographic(screen_name, df, freq):
     text = bars.mark_text(
         align='left',
         baseline='middle',
-        dx=3  # Nudges text to right so it doesn't appear on top of the bar
+        dx=3,  # Nudges text to right so it doesn't appear on top of the bar
+        fontWeight='bold'
     ).encode(
         text='count'
     )
@@ -339,14 +438,14 @@ def growthRate(screen_name, df, avg_rate, startDate_select, endDate_select):
     df['average_GR'] = average_GR
     st.write(f"The average of daily growth for {y_name} for the last {len(df)} days: {average_GR}")
 
-    bar1 = alt.Chart(df).mark_line(color='royalblue', point=True).encode(
+    line1 = alt.Chart(df).mark_line(color='royalblue', point=True).encode(
         x='date',
         y=y_label,
     ).properties(
         title=f"{screen_name} Average Growth Rate for {avg_rate}"
     )
 
-    bar2 = alt.Chart(df).mark_line(stroke='red',strokeDash=[6,6]).encode(
+    line2 = alt.Chart(df).mark_line(stroke='red',strokeDash=[6,6]).encode(
         x='date',
         y="average_GR"
     )
@@ -365,12 +464,12 @@ def growthRate(screen_name, df, avg_rate, startDate_select, endDate_select):
     )
 
     # Draw points on the line, and highlight based on selection
-    points = bar1.mark_point().encode(
+    points = line1.mark_point().encode(
         opacity=alt.condition(nearest, alt.value(1), alt.value(0))
     )
 
     # Draw text labels near the points, and highlight based on selection
-    text = bar1.mark_text(align='left', dx=5, dy=-5).encode(
+    text = line1.mark_text(align='left', dx=5, dy=-5).encode(
         text=alt.condition(nearest, y_label, alt.value(' '))
     )
 
@@ -381,7 +480,7 @@ def growthRate(screen_name, df, avg_rate, startDate_select, endDate_select):
         nearest
     )
 
-    layer = alt.layer(bar1, bar2, selectors, points, rules, text).configure_view(
+    layer = alt.layer(line1, line2, selectors, points, rules, text).configure_view(
         stroke='transparent'
     ).configure_axis(
         grid=False
@@ -430,6 +529,7 @@ def engagement_tweetType(df, days_select):
     df.drop_duplicates(subset=['Tweet_Type', 'Engagement'], inplace=True)
 
     df.sort_values(by="Tweet_Type", inplace=True, ascending=False)
+    df['Value'] = df['Value'].astype('int')
     df.reset_index(inplace=True, drop=True)
     return df
 
@@ -473,4 +573,25 @@ def engagement_timeBin(df, days_select):
     df.drop(['time_bin_num'], axis=1, inplace=True)
     df.reset_index(inplace=True, drop=True)
     df['Time_Bin'] = df['Time_Bin'].astype('str')
+    df['Value'] = df['Value'].astype('int')
     return df
+
+def engagement_BrandMention(df_brandMention, days_select):
+    endDate = datetime.datetime.now()
+    startDate = endDate - datetime.timedelta(days=days_select)
+    df = df_brandMention.copy()
+    df['created_at'] = pd.to_datetime(df.created_at).dt.tz_localize(None)
+    mask = (df['created_at'] >= startDate) & (df['created_at'] <= endDate)
+    df = df.loc[mask]
+    df.reset_index(inplace=True, drop=True)
+    retweet_average = df['retweet_count'].sum() / len(df)
+    favorite_average = df['favorite_count'].sum() / len(df)
+    engagementName = ['retweet_average', 'favorite_average']
+    engagementValue = [retweet_average, favorite_average]
+    df_new = pd.DataFrame({
+        'Engagement': engagementName,
+        'Value': engagementValue
+    })
+    df_new['Value'] = df_new['Value'].round()
+    df_new['Value'] = df_new['Value'].astype('int')
+    return df_new

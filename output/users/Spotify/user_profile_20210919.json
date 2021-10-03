@@ -1,0 +1,213 @@
+{
+    "id": 17230018,
+    "id_str": "17230018",
+    "name": "Spotify",
+    "screen_name": "Spotify",
+    "location": "",
+    "profile_location": null,
+    "description": "Listening is everything.\nPodcasts \ud83d\udc49 @SpotifyPodcasts\nLive audio \ud83d\udc49 @SpotifyGrnRoom\nSupport \ud83d\udc49 @SpotifyCares",
+    "url": "https://t.co/5G4Hekn0ea",
+    "entities": {
+        "url": {
+            "urls": [
+                {
+                    "url": "https://t.co/5G4Hekn0ea",
+                    "expanded_url": "http://Spotify.com",
+                    "display_url": "Spotify.com",
+                    "indices": [
+                        0,
+                        23
+                    ]
+                }
+            ]
+        },
+        "description": {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 4486545,
+    "friends_count": 17770,
+    "listed_count": 16630,
+    "created_at": "Fri Nov 07 12:14:28 +0000 2008",
+    "favourites_count": 13618,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 35942,
+    "lang": null,
+    "status": {
+        "created_at": "Fri Sep 17 21:33:23 +0000 2021",
+        "id": 1438979421722095619,
+        "id_str": "1438979421722095619",
+        "text": "Nicht schlecht @lilnasx \ud83d\udc4f https://t.co/uxUBc6fsV3",
+        "truncated": false,
+        "entities": {
+            "hashtags": [],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "LilNasX",
+                    "name": "MONTERO \ud83e\udd8b",
+                    "id": 754006735468261376,
+                    "id_str": "754006735468261376",
+                    "indices": [
+                        15,
+                        23
+                    ]
+                }
+            ],
+            "urls": [],
+            "media": [
+                {
+                    "id": 1438979055500644357,
+                    "id_str": "1438979055500644357",
+                    "indices": [
+                        26,
+                        49
+                    ],
+                    "media_url": "http://pbs.twimg.com/ext_tw_video_thumb/1438979055500644357/pu/img/jXRHMbw4h5OZg5FE.jpg",
+                    "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/1438979055500644357/pu/img/jXRHMbw4h5OZg5FE.jpg",
+                    "url": "https://t.co/uxUBc6fsV3",
+                    "display_url": "pic.twitter.com/uxUBc6fsV3",
+                    "expanded_url": "https://twitter.com/Spotify/status/1438979421722095619/video/1",
+                    "type": "photo",
+                    "sizes": {
+                        "thumb": {
+                            "w": 150,
+                            "h": 150,
+                            "resize": "crop"
+                        },
+                        "small": {
+                            "w": 680,
+                            "h": 680,
+                            "resize": "fit"
+                        },
+                        "medium": {
+                            "w": 1080,
+                            "h": 1080,
+                            "resize": "fit"
+                        },
+                        "large": {
+                            "w": 1080,
+                            "h": 1080,
+                            "resize": "fit"
+                        }
+                    }
+                }
+            ]
+        },
+        "extended_entities": {
+            "media": [
+                {
+                    "id": 1438979055500644357,
+                    "id_str": "1438979055500644357",
+                    "indices": [
+                        26,
+                        49
+                    ],
+                    "media_url": "http://pbs.twimg.com/ext_tw_video_thumb/1438979055500644357/pu/img/jXRHMbw4h5OZg5FE.jpg",
+                    "media_url_https": "https://pbs.twimg.com/ext_tw_video_thumb/1438979055500644357/pu/img/jXRHMbw4h5OZg5FE.jpg",
+                    "url": "https://t.co/uxUBc6fsV3",
+                    "display_url": "pic.twitter.com/uxUBc6fsV3",
+                    "expanded_url": "https://twitter.com/Spotify/status/1438979421722095619/video/1",
+                    "type": "video",
+                    "sizes": {
+                        "thumb": {
+                            "w": 150,
+                            "h": 150,
+                            "resize": "crop"
+                        },
+                        "small": {
+                            "w": 680,
+                            "h": 680,
+                            "resize": "fit"
+                        },
+                        "medium": {
+                            "w": 1080,
+                            "h": 1080,
+                            "resize": "fit"
+                        },
+                        "large": {
+                            "w": 1080,
+                            "h": 1080,
+                            "resize": "fit"
+                        }
+                    },
+                    "video_info": {
+                        "aspect_ratio": [
+                            1,
+                            1
+                        ],
+                        "duration_millis": 14848,
+                        "variants": [
+                            {
+                                "bitrate": 432000,
+                                "content_type": "video/mp4",
+                                "url": "https://video.twimg.com/ext_tw_video/1438979055500644357/pu/vid/320x320/Ju7nJb6rHb3c5kKa.mp4?tag=12"
+                            },
+                            {
+                                "bitrate": 832000,
+                                "content_type": "video/mp4",
+                                "url": "https://video.twimg.com/ext_tw_video/1438979055500644357/pu/vid/540x540/BpOR8GMlZYlnlgOY.mp4?tag=12"
+                            },
+                            {
+                                "bitrate": 1280000,
+                                "content_type": "video/mp4",
+                                "url": "https://video.twimg.com/ext_tw_video/1438979055500644357/pu/vid/720x720/0vEtDS1ydmWHRjNK.mp4?tag=12"
+                            },
+                            {
+                                "content_type": "application/x-mpegURL",
+                                "url": "https://video.twimg.com/ext_tw_video/1438979055500644357/pu/pl/M_ycmX4E1_KR3byH.m3u8?tag=12&container=fmp4"
+                            }
+                        ]
+                    },
+                    "additional_media_info": {
+                        "monetizable": false
+                    }
+                }
+            ]
+        },
+        "source": "<a href=\"https://mobile.twitter.com\" rel=\"nofollow\">Twitter Web App</a>",
+        "in_reply_to_status_id": 1438907265105412098,
+        "in_reply_to_status_id_str": "1438907265105412098",
+        "in_reply_to_user_id": 17230018,
+        "in_reply_to_user_id_str": "17230018",
+        "in_reply_to_screen_name": "Spotify",
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 18,
+        "favorite_count": 267,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "de"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": true,
+    "profile_background_color": "FFFFFF",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme5/bg.gif",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme5/bg.gif",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/1013614110171250688/vrPUCDn2_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1013614110171250688/vrPUCDn2_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/17230018/1623868345",
+    "profile_link_color": "1ED760",
+    "profile_sidebar_border_color": "000000",
+    "profile_sidebar_fill_color": "ECEBE8",
+    "profile_text_color": "458DBF",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": true,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "none",
+    "withheld_in_countries": []
+}

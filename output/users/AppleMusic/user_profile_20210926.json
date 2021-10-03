@@ -1,0 +1,250 @@
+{
+    "id": 74580436,
+    "id_str": "74580436",
+    "name": "Apple Music",
+    "screen_name": "AppleMusic",
+    "location": "Cupertino, CA",
+    "profile_location": null,
+    "description": "#BlackLivesMatter",
+    "url": "https://t.co/Bs0Vyjyln8",
+    "entities": {
+        "url": {
+            "urls": [
+                {
+                    "url": "https://t.co/Bs0Vyjyln8",
+                    "expanded_url": "http://apple.co/SUBSCRIBE",
+                    "display_url": "apple.co/SUBSCRIBE",
+                    "indices": [
+                        0,
+                        23
+                    ]
+                }
+            ]
+        },
+        "description": {
+            "urls": []
+        }
+    },
+    "protected": false,
+    "followers_count": 9910564,
+    "friends_count": 2067,
+    "listed_count": 22113,
+    "created_at": "Tue Sep 15 22:49:25 +0000 2009",
+    "favourites_count": 362,
+    "utc_offset": null,
+    "time_zone": null,
+    "geo_enabled": true,
+    "verified": true,
+    "statuses_count": 36457,
+    "lang": null,
+    "status": {
+        "created_at": "Sat Sep 25 20:20:57 +0000 2021",
+        "id": 1441860295698239492,
+        "id_str": "1441860295698239492",
+        "text": "Let\u2019s go! \ud83d\udd25\n#TooEasy by @1GunnaGunna x @1future is on #RapLife. https://t.co/D2iWgWoGzx https://t.co/v8nGw4PHYz",
+        "truncated": false,
+        "entities": {
+            "hashtags": [
+                {
+                    "text": "TooEasy",
+                    "indices": [
+                        12,
+                        20
+                    ]
+                },
+                {
+                    "text": "RapLife",
+                    "indices": [
+                        54,
+                        62
+                    ]
+                }
+            ],
+            "symbols": [],
+            "user_mentions": [
+                {
+                    "screen_name": "1GunnaGunna",
+                    "name": "WUNNA",
+                    "id": 788759365859835906,
+                    "id_str": "788759365859835906",
+                    "indices": [
+                        24,
+                        36
+                    ]
+                },
+                {
+                    "screen_name": "1future",
+                    "name": "FUTURE/FREEBANDZ",
+                    "id": 51742969,
+                    "id_str": "51742969",
+                    "indices": [
+                        39,
+                        47
+                    ]
+                }
+            ],
+            "urls": [
+                {
+                    "url": "https://t.co/D2iWgWoGzx",
+                    "expanded_url": "http://apple.co/RapLife",
+                    "display_url": "apple.co/RapLife",
+                    "indices": [
+                        64,
+                        87
+                    ]
+                }
+            ],
+            "media": [
+                {
+                    "id": 1441860262508654593,
+                    "id_str": "1441860262508654593",
+                    "indices": [
+                        88,
+                        111
+                    ],
+                    "media_url": "http://pbs.twimg.com/amplify_video_thumb/1441860262508654593/img/BAIFdMeaaRTVNx-g.jpg",
+                    "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1441860262508654593/img/BAIFdMeaaRTVNx-g.jpg",
+                    "url": "https://t.co/v8nGw4PHYz",
+                    "display_url": "pic.twitter.com/v8nGw4PHYz",
+                    "expanded_url": "https://twitter.com/AppleMusic/status/1441860295698239492/video/1",
+                    "type": "photo",
+                    "sizes": {
+                        "thumb": {
+                            "w": 150,
+                            "h": 150,
+                            "resize": "crop"
+                        },
+                        "small": {
+                            "w": 680,
+                            "h": 680,
+                            "resize": "fit"
+                        },
+                        "medium": {
+                            "w": 720,
+                            "h": 720,
+                            "resize": "fit"
+                        },
+                        "large": {
+                            "w": 720,
+                            "h": 720,
+                            "resize": "fit"
+                        }
+                    }
+                }
+            ]
+        },
+        "extended_entities": {
+            "media": [
+                {
+                    "id": 1441860262508654593,
+                    "id_str": "1441860262508654593",
+                    "indices": [
+                        88,
+                        111
+                    ],
+                    "media_url": "http://pbs.twimg.com/amplify_video_thumb/1441860262508654593/img/BAIFdMeaaRTVNx-g.jpg",
+                    "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1441860262508654593/img/BAIFdMeaaRTVNx-g.jpg",
+                    "url": "https://t.co/v8nGw4PHYz",
+                    "display_url": "pic.twitter.com/v8nGw4PHYz",
+                    "expanded_url": "https://twitter.com/AppleMusic/status/1441860295698239492/video/1",
+                    "type": "video",
+                    "sizes": {
+                        "thumb": {
+                            "w": 150,
+                            "h": 150,
+                            "resize": "crop"
+                        },
+                        "small": {
+                            "w": 680,
+                            "h": 680,
+                            "resize": "fit"
+                        },
+                        "medium": {
+                            "w": 720,
+                            "h": 720,
+                            "resize": "fit"
+                        },
+                        "large": {
+                            "w": 720,
+                            "h": 720,
+                            "resize": "fit"
+                        }
+                    },
+                    "video_info": {
+                        "aspect_ratio": [
+                            1,
+                            1
+                        ],
+                        "duration_millis": 10000,
+                        "variants": [
+                            {
+                                "bitrate": 832000,
+                                "content_type": "video/mp4",
+                                "url": "https://video.twimg.com/amplify_video/1441860262508654593/vid/540x540/RYR4TyiDBbF4KVhm.mp4?tag=14"
+                            },
+                            {
+                                "bitrate": 1280000,
+                                "content_type": "video/mp4",
+                                "url": "https://video.twimg.com/amplify_video/1441860262508654593/vid/720x720/jXEDHpZ8Vvbyaty7.mp4?tag=14"
+                            },
+                            {
+                                "bitrate": 432000,
+                                "content_type": "video/mp4",
+                                "url": "https://video.twimg.com/amplify_video/1441860262508654593/vid/320x320/Nk-z-vHgMEzooGRS.mp4?tag=14"
+                            },
+                            {
+                                "content_type": "application/x-mpegURL",
+                                "url": "https://video.twimg.com/amplify_video/1441860262508654593/pl/_xDzLjGsNX6IRzZr.m3u8?tag=14"
+                            }
+                        ]
+                    },
+                    "additional_media_info": {
+                        "title": "",
+                        "description": "",
+                        "monetizable": false
+                    }
+                }
+            ]
+        },
+        "source": "<a href=\"https://www.sprinklr.com\" rel=\"nofollow\">Sprinklr</a>",
+        "in_reply_to_status_id": null,
+        "in_reply_to_status_id_str": null,
+        "in_reply_to_user_id": null,
+        "in_reply_to_user_id_str": null,
+        "in_reply_to_screen_name": null,
+        "geo": null,
+        "coordinates": null,
+        "place": null,
+        "contributors": null,
+        "is_quote_status": false,
+        "retweet_count": 12,
+        "favorite_count": 114,
+        "favorited": false,
+        "retweeted": false,
+        "possibly_sensitive": false,
+        "lang": "en"
+    },
+    "contributors_enabled": false,
+    "is_translator": false,
+    "is_translation_enabled": false,
+    "profile_background_color": "EAEAEA",
+    "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_image_url_https": "https://abs.twimg.com/images/themes/theme1/bg.png",
+    "profile_background_tile": false,
+    "profile_image_url": "http://pbs.twimg.com/profile_images/1431129444362579971/jGrgSKDD_normal.jpg",
+    "profile_image_url_https": "https://pbs.twimg.com/profile_images/1431129444362579971/jGrgSKDD_normal.jpg",
+    "profile_banner_url": "https://pbs.twimg.com/profile_banners/74580436/1630042824",
+    "profile_link_color": "0088CC",
+    "profile_sidebar_border_color": "C7C7C7",
+    "profile_sidebar_fill_color": "E0E0E0",
+    "profile_text_color": "333333",
+    "profile_use_background_image": false,
+    "has_extended_profile": false,
+    "default_profile": false,
+    "default_profile_image": false,
+    "following": true,
+    "follow_request_sent": false,
+    "notifications": false,
+    "translator_type": "regular",
+    "withheld_in_countries": []
+}
