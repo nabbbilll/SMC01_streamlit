@@ -72,11 +72,6 @@ df_profileOption = st.sidebar.selectbox(
 
 st.sidebar.markdown("***")
 st.sidebar.write("Options for Growth Rate Visualization")
-avg_rate = st.sidebar.selectbox(
-    "Choose the attribute for the growth rate",
-    ('followers_count', 'friends_count', 'num_of_tweet', 'favourite_count'),
-    help="Choose to view which attribute for growth rate"
-)
 
 startDate_select = st.sidebar.date_input("Start Date:", value=endDate - datetime.timedelta(days=14),
                                          min_value=datetime.date(2021, 8, 25), max_value=datetime.date.today(),
@@ -358,15 +353,7 @@ with col_profileDemographic:
     func.profileDemographic(accName, followers_target, friends_target, df_profileOption, freq)
 with col_growthRate:
     # Visualize average growth rate
-    if avg_rate == "followers_count":
-        avg_name = "followers count"
-    elif avg_rate == "friends_count":
-        avg_name = "friends count"
-    elif avg_rate == "num_of_tweet":
-        avg_name = "tweet count"
-    elif avg_rate == "favourite_count":
-        avg_name = "favourite count"
-    st.subheader(f"{accName}'s Average Growth Rate for {avg_name}")
-    func.growthRate(accName, df_target, avg_rate, startDate_select, endDate_select)
+    st.subheader(f"{accName}'s Average Growth Rate")
+    func.growthRate(accName, df_target, startDate_select, endDate_select)
 
 func.emptyLine()
