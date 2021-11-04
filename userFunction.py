@@ -10,6 +10,25 @@ import math
 from collections import Counter
 from pathlib import Path
 import warnings
+import csv
+import matplotlib.pyplot as plt
+
+import nltk
+from nltk.tokenize import TweetTokenizer
+from nltk.stem import PorterStemmer
+from nltk.corpus import stopwords
+import re
+import emoji
+import string
+from wordcloud import WordCloud
+from textblob import TextBlob
+
+import networkx as nx
+from operator import itemgetter
+import community
+import streamlit.components.v1 as components
+from pyvis.network import Network
+
 warnings.filterwarnings('ignore')
 
 # create a line in the dashboard to seperate between different sections
@@ -241,7 +260,8 @@ def get_topHashtag(df_timeline):
 def get_topFollowerDoC(df_followers):
     df = df_followers.copy()
     df['count'] = df['friends_count'] + df['followers_count']
-    df.drop(columns=['created_at','friends_count','followers_count','tweet_count'],inplace=True)
+    #df.drop(columns=['created_at','friends_count','followers_count','tweet_count'],inplace=True)
+    df = df[['followers_screen_name','count']]
     df.sort_values(by='count', inplace=True, ascending=False)
     df.reset_index(inplace=True, drop=True)
     return df
@@ -492,7 +512,7 @@ def drawGraph_engagementBrandMention(engagement_df):
 def profileDemographic(screen_name, df_followers, df_friends, option, freq):
     if option == "followers":
         df = df_followers.copy()
-        df = df.drop(['followers_screen_name', 'friends_count', 'followers_count', 'tweet_count'], axis=1)
+        df = df[['created_at']]
     elif option == "friends":
         df = df_friends.copy()
         df = df.drop(['friends_screen_name', 'friends_count', 'followers_count', 'tweet_count'], axis=1)
@@ -578,25 +598,38 @@ def growthRate(screen_name, df, startDate_select, endDate_select):
     df['date'] = df['date'].astype('str')
 
     # calculate average growth rate throughout the days
+    st.write(f"The average of  growth rate for the last {len(df)} days:")
+    average_GR_value = []
+    average_GR_name = []
     # followers count
     average_GR_followers = math.pow((df.iloc[-1]['followers_count'] / df.iloc[0]['followers_count']), 1 / len(df)) - 1
     average_GR_followers = round(average_GR_followers * 100, 5)
-    st.write(f"The average of daily growth for followers count for the last {len(df)} days: {average_GR_followers}")
+    average_GR_value.append(average_GR_followers)
+    average_GR_name.append("Followers Count")
 
     # friends count
     average_GR_friends = math.pow((df.iloc[-1]['friends_count'] / df.iloc[0]['friends_count']), 1 / len(df)) - 1
     average_GR_friends = round(average_GR_friends * 100, 5)
-    st.write(f"The average of daily growth for friends count for the last {len(df)} days: {average_GR_friends}")
+    average_GR_value.append(average_GR_friends)
+    average_GR_name.append("Friends Count")
 
     # number of tweets
     average_GR_tweet = math.pow((df.iloc[-1]['num_of_tweet'] / df.iloc[0]['num_of_tweet']), 1 / len(df)) - 1
     average_GR_tweet = round(average_GR_tweet * 100, 5)
-    st.write(f"The average of daily growth for num of tweets for the last {len(df)} days: {average_GR_tweet}")
+    average_GR_value.append(average_GR_tweet)
+    average_GR_name.append("Tweet Count")
 
     # favorite count
     average_GR_favorite = math.pow((df.iloc[-1]['favourite_count'] / df.iloc[0]['favourite_count']), 1 / len(df)) - 1
     average_GR_favorite = round(average_GR_favorite * 100, 5)
-    st.write(f"The average of daily growth for favorite count for the last {len(df)} days: {average_GR_favorite}")
+    average_GR_value.append(average_GR_favorite)
+    average_GR_name.append("Favorite Count")
+
+    # display average GR value in dataframe
+    df_avg_GR = pd.DataFrame({
+        'Growth Rate': average_GR_name,
+        'Average Value': average_GR_value
+    })
 
     df.drop(['created_at', 'num_of_tweet','favourite_count', 'followers_count',
     'friends_count', 'profile_img'], axis=1, inplace=True)
@@ -659,4 +692,388 @@ def growthRate(screen_name, df, startDate_select, endDate_select):
         columns=2,
         orient='bottom'
     )
+    return layer, df_avg_GR
+
+#####################################################################################
+
+def preprocess_tweet(text):
+    text = text.lower()
+    text = re.sub('@[^\s]+', '', text)  # remove any user screen name
+    text = re.sub(emoji.get_emoji_regexp(), r"", text)  # remove any emoji
+    text = re.sub(r"http\S+", "", text)  # remove any web link
+    text = re.sub(r'[^\x00-\x7F]', '', text)  # remove non-ascii character
+    text = re.sub('\n', '', text)  # remove "\n"
+    punct = string.punctuation
+    punct = punct.replace("#", "")  # don't remove hashtag
+    punct_pattern = r"[{}]".format(punct)  # create the regex pattern
+    text = re.sub(punct_pattern, '', text)  # remove all punctuation symbol except '#'
+    text = re.sub(r'\b[0-9]+\b\s*', '', text)  # remove words containing numbers only
+    text = re.sub('(\\b[A-Za-z] \\b|\\b [A-Za-z]\\b)', '', text)  # remove single character in the text
+
+    # tokenization
+    tweet_tokenizer = TweetTokenizer()
+    tokens = tweet_tokenizer.tokenize(text)
+
+    # stop words removal
+    stop_words = set(stopwords.words('english'))
+    new_stopwords = ['rt', '#', 'amp']
+    newstopwords = stop_words.union(new_stopwords)
+    text = [word for word in tokens if not word in newstopwords]
+
+    # remove single character word
+    text = [word for word in text if len(word) > 1]
+
+    # stemming the words
+    ps = PorterStemmer()
+    for index, word in enumerate(text):
+        text[index] = ps.stem(word)
+
+    merge_text = ""
+    for i in reversed(range(len(text))):
+        merge_text = str(text[i]) + " " + merge_text
+
+    return merge_text
+
+def generate_N_grams(text,ngram=1):
+    words=[word for word in text.split()]
+    temp=zip(*[words[i:] for i in range(0,ngram)])
+    ans=[' '.join(ngram) for ngram in temp]
+    return ans
+
+def getFilterSA_dataframe(df_sa, option):
+    df = df_sa.copy()
+    option = option.lower()
+    df = df[df['sentiment_score'] == option]
+    df = df.reset_index(drop=True)
+    return df
+
+@st.cache(suppress_st_warning=True, allow_output_mutation=True)
+def getWordCloud(text_df, n_gram_option):
+    df = text_df.copy()
+    df = df[['tweet_content']]
+    df['clean_tweet'] = df['tweet_content'].apply(preprocess_tweet)
+
+    if n_gram_option == "unigram":
+        n_gram_value = 1
+    elif n_gram_option == "bigram":
+        n_gram_value = 2
+    elif n_gram_option == "trigram":
+        n_gram_value = 3
+
+
+    df['tweet_tokens'] = df.apply(lambda x: generate_N_grams(x['clean_tweet'], n_gram_value), axis=1)
+
+    tf = Counter()
+    for index, row in df.iterrows():
+        word = row['tweet_tokens']
+        tf.update(word)
+
+    df_termCount = pd.DataFrame(columns=['terms', 'count'])
+    for tag, count in tf.most_common(20):
+        df_termCount = df_termCount.append({
+            'terms': tag,
+            'count': count
+        }, ignore_index=True)
+    df_termCount['count'] = df_termCount['count'].astype('int')
+    df_termCount = df_termCount.sort_values(by=['count'], ascending=False, ignore_index=True)
+
+    wordcloud_graph = WordCloud(background_color='white',
+                                width=5000,
+                                height=3000, # adjust later based on dataframe & graph column
+                                max_words=20
+                                ).generate_from_frequencies(tf)
+
+    return wordcloud_graph, df_termCount
+
+def termFrequency_Visualization(df, screen_name):
+    bars = alt.Chart(df).mark_bar(
+        cornerRadiusTopLeft=3,
+        cornerRadiusTopRight=3
+    ).encode(
+        x='count',
+        y= alt.Y('terms', sort=None)
+    ).properties(
+        title=f"{screen_name} Term Frequency"
+    )
+
+    text = bars.mark_text(
+        align='left',
+        baseline='middle',
+        dx=3,
+        fontWeight='bold'
+    ).encode(
+        text='count'
+    )
+
+    layer = alt.layer(bars, text).configure_view(
+        stroke='transparent'
+    ).configure_axis(
+        grid=False
+    )
     return st.altair_chart(layer, use_container_width=True)
+
+def getSentimentScore(val):
+    if val < 0:
+        score = "negative"
+    elif val == 0:
+        score = "neutral"
+    else:
+        score = "positive"
+    return score
+
+def getSentimentAnalysis(df_text):
+    df = df_text.copy()
+    df = df[['created_at','tweet_content']]
+    df['clean_tweet'] = df['tweet_content'].apply(preprocess_tweet)
+
+    df['polarity'] = df['clean_tweet'].apply(lambda x: TextBlob(x).polarity)
+    df['subjective'] = df['clean_tweet'].apply(lambda x: TextBlob(x).subjectivity)
+    df['sentiment_score'] = df['polarity'].apply(getSentimentScore)
+
+    return df
+
+def getPieChart_SA(df_sa):
+    df = df_sa.copy()
+    valueCount_dict = df['sentiment_score'].value_counts().to_dict()
+    totalVal_count = len(df)
+
+    # sort the dictionary based on custom order
+    keyorder = ['positive', 'neutral', 'negative']
+    orderedList = sorted(valueCount_dict.items(), key=lambda i: keyorder.index(i[0]))
+
+    cat_list, val_list = [], []
+    for i in range(len(orderedList)):
+        cat_list.append(orderedList[i][0])
+        val_list.append(round((orderedList[i][1] / totalVal_count) * 100, 2))
+
+    explode = (0.1, 0.1, 0.1)
+    fig1, ax1 = plt.subplots()
+    ax1.pie(val_list,
+            labels=cat_list,
+            explode=explode,
+            colors=['mediumseagreen', 'gold', 'crimson'],
+            autopct='%1.1f%%',
+            shadow=True,
+            startangle=90)
+    ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+
+    st.pyplot(fig1, clear_figure=True)
+
+def dailySentimentAnalysisGraph(text_df, screen_name, startDate_select, endDate_select):
+    df = text_df[['created_at', 'sentiment_score']].copy()
+    df = df.sort_values(by='created_at', ascending=True).reset_index(drop=True)
+    df['created_at'] = df['created_at'].dt.date
+    df['created_at'] = df['created_at'].astype('str')
+    df['created_at'] = pd.to_datetime(df['created_at'])
+    startDate_select = pd.to_datetime(startDate_select)
+    endDate_select = pd.to_datetime(endDate_select)
+    mask = (df['created_at'] >= startDate_select) & (df['created_at'] <= endDate_select)
+    df = df.loc[mask]
+    df['created_at'] = df['created_at'].dt.date
+    df['created_at'] = df['created_at'].astype('str')
+
+    # add missing sentiment score categories
+    start_date = df['created_at'].iloc[0]
+    end_date = df['created_at'].iloc[-1]
+    df_temp = pd.DataFrame({
+        'created_at': pd.date_range(start=start_date, end=end_date, freq='D')
+    })
+    df_temp['created_at'] = df_temp['created_at'].dt.date
+    df_temp['created_at'] = df_temp['created_at'].astype('str')
+    categories = ['negative', 'neutral', 'positive']
+    new_cat = []
+
+    for i in range(len(df_temp)):
+        for x in categories:
+            new_cat.append(x)
+
+    df_temp = df_temp.loc[df_temp.index.repeat(3)].reset_index(drop=True)
+    df_temp['sentiment_score'] = new_cat
+    df_temp['count'] = 0
+    df = df.groupby(["created_at", "sentiment_score"]).size().reset_index(name="count")
+
+    result = df.append(df_temp)
+    result = result.drop_duplicates(subset=['created_at', 'sentiment_score'], keep='first')
+    result = result.sort_values(by='created_at', ascending=True).reset_index(drop=True)
+    result = result.rename(columns={
+        'created_at': 'date',
+        'sentiment_score': 'sentiment_category'
+    })
+
+    domain = ['positive', 'neutral', 'negative']
+    range_ = ['green', 'orange', 'red']
+    # Line graph visualization
+    # Create a selection that chooses the nearest point & selects based on x-value
+    nearest = alt.selection(type='single', nearest=True, on='mouseover',
+                            fields=['date'], empty='none')
+
+    # The basic line
+    line = alt.Chart(result).mark_line(point=True).encode(
+        x='date',
+        y='count:Q',
+        color=alt.Color('sentiment_category', scale=alt.Scale(domain=domain, range=range_))
+    ).properties(
+        title=f"{screen_name} Daily Sentiment Value"
+    )
+
+    # Transparent selectors across the chart. This is what tells us
+    # the x-value of the cursor
+    selectors = alt.Chart(result).mark_point().encode(
+        x='date',
+        opacity=alt.value(0),
+    ).add_selection(
+        nearest
+    )
+
+    # Draw points on the line, and highlight based on selection
+    points = line.mark_point().encode(
+        opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+    )
+
+    # Draw text labels near the points, and highlight based on selection
+    text = line.mark_text(align='left', dx=5, dy=-5, fontSize=15, fontWeight='bold').encode(
+        text=alt.condition(nearest, 'count:Q', alt.value(' '))
+    )
+
+    # Draw a rule at the location of the selection
+    rules = alt.Chart(result).mark_rule(color='gray').encode(
+        x='date',
+    ).transform_filter(
+        nearest
+    )
+
+    # Put the five layers into a chart and bind the data
+    layer = alt.layer(
+        line, selectors, points, rules, text
+    ).configure_view(
+        stroke='transparent'
+    ).configure_axis(
+        grid=False
+    ).configure_legend(
+        columns=3,
+        orient='bottom'
+    ).properties(
+        height=350
+    )
+
+    sentiment_cat = ['negative', 'neutral', 'positive']
+    final_result = pd.concat([result.set_index(['date']).groupby('sentiment_category')['count'].get_group(key) for key in sentiment_cat], axis=1)
+    final_result.columns = sentiment_cat
+    final_result.reset_index(inplace=True)
+
+    return layer, final_result
+
+######################################################################################
+@st.cache(suppress_st_warning=True, allow_output_mutation=True)
+def getNetworkStats(screen_name):
+    # read the node list dataset
+    with open("datasets/{}/nodeList.csv".format(screen_name), 'r', encoding='utf-8') as nodecsv:
+        nodereader = csv.reader(nodecsv)
+        # Python list comprehension and list slicing to remove the header row)
+        nodes = [n for n in nodereader][1:]
+
+    node_names = [n[0] for n in nodes]  # Get a list names
+
+    # read the edge list dataset
+    with open("datasets/{}/edgeList.csv".format(screen_name), 'r', encoding='utf-8') as edgecsv:
+        edgereader = csv.reader(edgecsv)
+        edges = [tuple(e) for e in edgereader][1:]  # Why index 1? You try it with index 0
+
+    # create graph object
+    G = nx.Graph()
+
+    # add lists of nodes and edges
+    G.add_nodes_from(node_names)  # put the nodes into the graph object
+    G.add_edges_from(edges)  # put the edges into the graph object
+    # print("Graph Information: ", nx.info(G))
+
+    # node information
+    location_dict = {}
+    created_at_dict = {}
+    followers_count_dict = {}
+    friends_count_dict = {}
+    statuses_count_dict = {}
+
+    for node in nodes:
+        location_dict[node[0]] = node[1]
+        created_at_dict[node[0]] = node[2]
+        followers_count_dict[node[0]] = node[3]
+        friends_count_dict[node[0]] = node[4]
+        statuses_count_dict[node[0]] = node[5]
+
+    # Add each dictionary as a node attribute to the Graph object
+    nx.set_node_attributes(G, name='location', values=location_dict)
+    nx.set_node_attributes(G, name='created_at', values=created_at_dict)
+    nx.set_node_attributes(G, name='followers_count', values=followers_count_dict)
+    nx.set_node_attributes(G, name='friends_count', values=friends_count_dict)
+    nx.set_node_attributes(G, name='statuses_count', values=statuses_count_dict)
+
+    # Calculating degree and adding it as an attribute to your network
+    # while "degree" reports the sum of "in_degree" and "out_degree" even though that may feel inconsistent at times
+    person_dict = dict(G.degree(G.nodes()))
+    nx.set_node_attributes(G, name='person_dict', values=person_dict)
+
+    return G
+
+def display_network(accName):
+    networkPyvis = open(f'datasets/{accName}_NetworkPyvis.html', 'r', encoding='utf-8')
+    components.html(networkPyvis.read(), height=325)
+
+def getNetworkInfo(network, network_df):
+    density = round(nx.density(network), 5)
+    num_nodes = nx.number_of_nodes(network)
+    num_edges = nx.number_of_edges(network)
+
+    communities_list = network_df['modularity'].tolist()
+    num_communities = max(communities_list) + 1
+
+    # diameter = nx.diameter(network)
+    diameter = 4 #temp
+
+    return density, num_nodes, num_edges, num_communities, diameter
+
+def getNetworkData(accName):
+    fName = "datasets/{}/networkData.csv".format(accName)
+    df_network = pd.read_csv(fName)
+
+    return df_network
+
+def getNetworkCentralityMeasures(network_df, col_select):
+    df = network_df.copy()
+    df = df[['Id','degree','betweenness','closeness','eigenvector']]
+    df = pd.melt(df, id_vars=['Id'], value_vars=['degree','betweenness','closeness','eigenvector'])
+    # df.sort_values(by=['betweenness'], ascending=False, inplace=True)
+    df = df.rename(columns={
+        'Id': 'Screen Name',
+        'variable': 'Centrality Measure',
+        'value': 'Value'
+    })
+    df = df.loc[df['Centrality Measure'] == col_select]
+    df.sort_values(by=['Value'], ascending=False, inplace=True)
+    df.reset_index(drop=True, inplace=True)
+    return df
+
+def getCommunitySize(network_df):
+    df = network_df.copy()
+    df = df[['Id','betweenness','eigenvector','closeness','modularity']]
+    community_size_series = df['modularity'].value_counts()
+    community_size = community_size_series.to_dict()
+
+    df['community_size'] = df['modularity'].map(community_size)
+    df['community_size_percentage'] = (df['community_size'] / len(df)) * 100
+    df['community_size_percentage'] = df['community_size_percentage'].round(2)
+
+    df = df.sort_values(by=['betweenness','eigenvector','closeness'], ascending=False, ignore_index=True)
+    df = df.drop_duplicates(subset=['modularity'], keep='first', ignore_index=True)
+    df = df.drop(columns=['betweenness','eigenvector','closeness'])
+
+    df = df.rename(columns={
+        'Id': 'top_node',
+        'modularity': 'community'
+    })
+    df = df[['community', 'top_node', 'community_size', 'community_size_percentage']]
+    df = df.sort_values(by=['community_size'], ascending=False, ignore_index=True)
+    df['community_size'] = df['community_size'].astype('str') + str(" (") + df['community_size_percentage'].astype('str') + str('%)')
+    df = df.drop(columns=['community_size_percentage'])
+
+    return df

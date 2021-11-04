@@ -11,15 +11,34 @@ from collections import Counter
 from pathlib import Path
 import userFunction as func
 import warnings
+import csv
+import matplotlib.pyplot as plt
+
+import nltk
+from nltk.tokenize import TweetTokenizer
+from nltk.stem import PorterStemmer
+from nltk.corpus import stopwords
+import re
+import emoji
+import string
+from wordcloud import WordCloud
+from textblob import TextBlob
+
+import networkx as nx
+from operator import itemgetter
+import community
+import streamlit.components.v1 as components
+from pyvis.network import Network
 
 warnings.filterwarnings('ignore')
 
 ######################################################################################
 st.set_page_config(page_title="SMC Dashboard", page_icon=":desktop_computer:", layout="wide", initial_sidebar_state="auto")
+st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Initialize start date and end date to read the json files
 startDate = datetime.datetime(2021, 8, 25)
-endDate = datetime.datetime(2021, 10, 4)
+endDate = datetime.datetime(2021, 11, 2)
 
 # user profile, followers, friends and timeline
 user_Spotify = func.getuserProfile("Spotify")
@@ -28,6 +47,7 @@ friends_Spotify = func.getfriendsProfile("Spotify")
 timeline_Spotify = func.getuserTimeline("Spotify")
 mutual_Spotify = func.getmutualFriends(friends_Spotify, followers_Spotify)
 brandMention_Spotify = func.getbrand_Mention("Spotify")
+network_Spotify = func.getNetworkStats("Spotify")
 
 user_AppleMusic = func.getuserProfile("AppleMusic")
 followers_AppleMusic= func.getfollowersProfile("AppleMusic")
@@ -35,6 +55,8 @@ friends_AppleMusic = func.getfriendsProfile("AppleMusic")
 timeline_AppleMusic = func.getuserTimeline("AppleMusic")
 mutual_AppleMusic = func.getmutualFriends(friends_AppleMusic, followers_AppleMusic)
 brandMention_AppleMusic = func.getbrand_Mention("AppleMusic")
+network_AppleMusic = func.getNetworkStats("AppleMusic")
+
 
 user_YoutubeMusic = func.getuserProfile("youtubemusic")
 followers_YoutubeMusic= func.getfollowersProfile("youtubemusic")
@@ -42,6 +64,8 @@ friends_YoutubeMusic = func.getfriendsProfile("youtubemusic")
 timeline_YoutubeMusic = func.getuserTimeline("youtubemusic")
 mutual_YoutubeMusic = func.getmutualFriends(friends_YoutubeMusic, followers_YoutubeMusic)
 brandMention_YoutubeMusic = func.getbrand_Mention("youtubemusic")
+network_YoutubeMusic = func.getNetworkStats("youtubemusic")
+
 
 # get profile image
 img_Spotify = func.getprofileImg(user_Spotify)
@@ -73,16 +97,52 @@ df_profileOption = st.sidebar.selectbox(
 st.sidebar.markdown("***")
 st.sidebar.write("Options for Growth Rate Visualization")
 
-startDate_select = st.sidebar.date_input("Start Date:", value=endDate - datetime.timedelta(days=14),
-                                         min_value=datetime.date(2021, 8, 25), max_value=datetime.date.today(),
+startDate_select = st.sidebar.date_input("Start Date:",
+                                         value=endDate - datetime.timedelta(days=14),
+                                         min_value=datetime.date(2021, 8, 25),
+                                         max_value=datetime.date.today(),
                                          help="Select the start date for visualization")
-endDate_select = st.sidebar.date_input("End Date:", value= endDate,
+endDate_select = st.sidebar.date_input("End Date:",
+                                       value= endDate,
                                        min_value=datetime.date(2021, 8, 25),
-                                       max_value=datetime.date.today(), help="Select the end date for visualization")
+                                       max_value=datetime.date.today(),
+                                       help="Select the end date for visualization")
 if startDate_select > endDate_select:
     st.error("Selected start date is larger than the selected end date")
 
-st.title("Social Media Computing Assignment 1")
+st.sidebar.markdown("***")
+st.sidebar.write("Options for Sentiment Analysis Visualization")
+
+startDateSA_select = st.sidebar.date_input("Start Date:",
+                                           value=endDate - datetime.timedelta(days=14),
+                                           min_value=datetime.date(2021, 8, 25),
+                                           max_value=datetime.date.today(),
+                                           help="Select the start date for visualization",
+                                           key="Sentiment Analysis Start Date Visualization")
+endDateSA_select = st.sidebar.date_input("End Date:",
+                                         value= endDate,
+                                         min_value=datetime.date(2021, 8, 25),
+                                         max_value=datetime.date.today(),
+                                         help="Select the end date for visualization",
+                                         key="Sentiment Analysis Start Date Visualization")
+if startDateSA_select > endDateSA_select:
+    st.error("Selected start date is larger than the selected end date")
+
+st.sidebar.markdown("***")
+st.sidebar.write("Options for WordCloud Visualization")
+wordcloudPolarity_option = st.sidebar.selectbox(
+    "Select Sentiment Polarity for Visualization:",
+    ['Positive', 'Neutral', 'Negative'],
+    help="Choose Sentiment Polarity desired for WordCloud Visualization"
+)
+
+ngramValue_option = st.sidebar.selectbox(
+    "Choose the value for N-Gram",
+    ('unigram', 'bigram', 'trigram'),
+    help="Choose the value for N-Gram Frequency"
+)
+
+st.title("Social Media Dashboard")
 
 # Assign selected account as target and others as competitor
 if accName == "Spotify":
@@ -105,6 +165,8 @@ if accName == "Spotify":
     timeline_target = timeline_Spotify
     timeline_competitor1 = timeline_AppleMusic
     timeline_competitor2 = timeline_YoutubeMusic
+
+    network_target = network_Spotify
 elif accName == "AppleMusic":
     img_target = img_AppleMusic
     df_target = user_AppleMusic
@@ -125,6 +187,8 @@ elif accName == "AppleMusic":
     timeline_target = timeline_AppleMusic
     timeline_competitor1 = timeline_Spotify
     timeline_competitor2 = timeline_YoutubeMusic
+
+    network_target = network_AppleMusic
 elif accName == "YoutubeMusic":
     img_target = img_YoutubeMusic
     df_target = user_YoutubeMusic
@@ -145,6 +209,8 @@ elif accName == "YoutubeMusic":
     timeline_target = timeline_YoutubeMusic
     timeline_competitor1 = timeline_AppleMusic
     timeline_competitor2 = timeline_Spotify
+
+    network_target = network_YoutubeMusic
 
 # create the dashboard title
 acc_img, acc_title = st.columns([1, 10])
@@ -188,7 +254,7 @@ with acc_title:
         )
 
 func.emptyLine()
-
+st.title("Social Media Campaigns and Metrics")
 st.subheader(f"{accName}'s Metrics")
 col_metrics1, col_metrics2, col_metrics3 = st.columns(3)
 
@@ -319,8 +385,6 @@ with col_engagementTimeType:
     # visualization
     func.drawGraph_engagementTime(engagement_time_df)
 
-
-
 # average engagement based on popular brand mention
 with col_engagementBrandMention:
     st.subheader(f"{accName}'s Average Engagement Based on Popular Brand Mention")
@@ -354,6 +418,105 @@ with col_profileDemographic:
 with col_growthRate:
     # Visualize average growth rate
     st.subheader(f"{accName}'s Average Growth Rate")
-    func.growthRate(accName, df_target, startDate_select, endDate_select)
+    growthRate_layer, growthRate_df = func.growthRate(accName, df_target, startDate_select, endDate_select)
+    tick_growthRate = st.checkbox("Display Average Growth Rate Dataframe", key="Tick for Average Growth Rate Table")
+    if tick_growthRate:
+        st.dataframe(growthRate_df)
+    st.write("")
+    st.altair_chart(growthRate_layer, use_container_width=True)
+func.emptyLine()
+
+# Assignment 2 Section
+st.title("Social Media Sentiment Analysis")
+
+col_pieChartSA, col_lineChartSA = st.columns(2)
+sentimentAnalysis_df = func.getSentimentAnalysis(df_brandMention)
+with col_pieChartSA:
+    st.subheader(f"{accName}'s Overall Sentiment Analysis")
+    func.getPieChart_SA(sentimentAnalysis_df)
+
+with col_lineChartSA:
+    st.subheader(f"{accName}'s Daily Sentiment Analysis")
+    dailySA_layer, dailySA_df = func.dailySentimentAnalysisGraph(sentimentAnalysis_df, accName, startDateSA_select, endDateSA_select)
+    st.altair_chart(dailySA_layer, use_container_width=True)
+    tick_dailySA = st.checkbox("Display Daily Sentiment Analysis Dataframe", key="Tick for Daily Sentiment Analysis Table")
+    if tick_dailySA:
+        st.dataframe(dailySA_df)
+func.emptyLine()
+
+filteredSA_df = func.getFilterSA_dataframe(sentimentAnalysis_df, wordcloudPolarity_option)
+wordcloudPolarity_graph, df_polarityTermCount = func.getWordCloud(filteredSA_df, ngramValue_option)
+col_temp1, col_temp2 = st.columns(2)
+with col_temp1:
+    st.subheader(f"{accName}'s {wordcloudPolarity_option} Polarity WordCloud")
+    plt.imshow(wordcloudPolarity_graph, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    st.pyplot()
+with col_temp2:
+    st.subheader(f"{accName}'s {wordcloudPolarity_option} Polarity Term Frequency")
+    expander_termFrequency = st.expander(label='Set Conditions')
+    with expander_termFrequency:
+        termFrequency_count = st.slider("Display how many top terms?", min_value=0, max_value=15, value=5)
+    # checkbox to display dataframe
+    tick_termFrequency = st.checkbox("Display Term Frequency Dataframe", key="Tick for Polarity Term Frequency Table")
+    if tick_termFrequency:
+        st.dataframe(df_polarityTermCount.head(termFrequency_count))
+    func.termFrequency_Visualization(df_polarityTermCount.head(termFrequency_count), accName)
+func.emptyLine()
+
+# Assignment 3 Section
+st.title("Social Media Network Analysis")
+
+# get each company network data(node information and centrality measures)
+networkData_df = func.getNetworkData(accName)
+
+st.subheader(f"{accName}'s Network Visualization and Info")
+
+col_networkVisualization, col_networkStats_left, col_networkStats_right = st.columns([10, 5, 5])
+with col_networkVisualization:
+    func.display_network(accName)
+
+net_density, net_num_nodes, net_num_edges, net_num_communities, net_diameter = func.getNetworkInfo(network_target, networkData_df)
+with col_networkStats_left:
+    st.markdown('####')
+    st.metric(label="Network Number Of Nodes:", value=net_num_nodes)
+    st.metric(label="Network Number Of Edges:", value=net_num_edges)
+    st.metric(label="Network Diameter:", value=net_diameter)
+with col_networkStats_right:
+    st.markdown('####')
+    st.metric(label="Network Density:", value=net_density)
+    st.metric(label="Number of Communities:", value=net_num_communities)
+func.emptyLine()
+
+col_networkCentralityMeasure, col_networkTopCommunity = st.columns(2)
+with col_networkCentralityMeasure:
+    st.subheader(f"{accName}'s Network Top Centrality Measures")
+    expander_networkTopMeasures = st.expander(label='Set Conditions')
+
+    networkData_colList = networkData_df.columns.tolist()
+    networkData_colList = networkData_colList[8:12]
+
+    with expander_networkTopMeasures:
+        topMeasures_num = st.slider("Display how many top centrality measures users?", min_value=0, max_value=10, value=3)
+        centralityMeasures_select = st.selectbox(
+            "Select Centrality Measures",
+            networkData_colList,
+            index= 1,
+            help="Choose Centrality Measures to display"
+        )
+    NetworkCentralityMeasures_df = func.getNetworkCentralityMeasures(networkData_df, centralityMeasures_select)
+    NetworkCentralityMeasures_df = NetworkCentralityMeasures_df.head(topMeasures_num)
+    st.dataframe(NetworkCentralityMeasures_df)
+
+with col_networkTopCommunity:
+    st.subheader(f"{accName}'s Network Community")
+    expander_communitySize = st.expander(label='Set Conditions')
+    with expander_communitySize:
+        topCommunity_num = st.slider("Display how many top community?", min_value=0, max_value=10, value=3)
+
+    df_communitySize = func.getCommunitySize(networkData_df)
+    df_communitySize = df_communitySize.head(topCommunity_num)
+    st.dataframe(df_communitySize.style.format({'community_size_percentage': '{:.2f}'}))
 
 func.emptyLine()
