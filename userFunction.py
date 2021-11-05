@@ -17,11 +17,16 @@ import nltk
 from nltk.tokenize import TweetTokenizer
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.corpus import sentiwordnet as swn
 import re
 import emoji
 import string
 from wordcloud import WordCloud
 from textblob import TextBlob
+import gensim
+from gensim import corpora
+import pyLDAvis.gensim_models
 
 import networkx as nx
 from operator import itemgetter
@@ -962,6 +967,15 @@ def dailySentimentAnalysisGraph(text_df, screen_name, startDate_select, endDate_
     final_result.reset_index(inplace=True)
 
     return layer, final_result
+
+def getTopicModeling(screen_name):
+    fName = "datasets/{}/topicModel.csv".format(screen_name)
+    df = pd.read_csv(fName)
+    df = df.set_axis(['keyword1','keyword2','keyword3','keyword4','keyword5',
+                      'keyword6','keyword7','keyword8','keyword9','keyword10'], axis=1, inplace=False)
+    df = df.rename(index=lambda s: 'Topic'+ str(s+1))
+
+    return df
 
 ######################################################################################
 @st.cache(suppress_st_warning=True, allow_output_mutation=True)

@@ -18,11 +18,16 @@ import nltk
 from nltk.tokenize import TweetTokenizer
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
+from nltk.corpus import wordnet as wn
+from nltk.corpus import sentiwordnet as swn
 import re
 import emoji
 import string
 from wordcloud import WordCloud
 from textblob import TextBlob
+import gensim
+from gensim import corpora
+import pyLDAvis.gensim_models
 
 import networkx as nx
 from operator import itemgetter
@@ -38,7 +43,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 # Initialize start date and end date to read the json files
 startDate = datetime.datetime(2021, 8, 25)
-endDate = datetime.datetime(2021, 11, 2)
+endDate = datetime.datetime(2021, 11, 5)
 
 # user profile, followers, friends and timeline
 user_Spotify = func.getuserProfile("Spotify")
@@ -463,6 +468,16 @@ with col_temp2:
     if tick_termFrequency:
         st.dataframe(df_polarityTermCount.head(termFrequency_count))
     func.termFrequency_Visualization(df_polarityTermCount.head(termFrequency_count), accName)
+func.emptyLine()
+
+st.subheader(f"{accName}'s Topic Modeling")
+
+topicModel_df = func.getTopicModeling(accName)
+expander_topicModel = st.expander(label='Set Conditions')
+with expander_topicModel:
+    topicModel_count = st.slider("Display how many keywords represent the topic?", min_value=1, max_value=10, value=5)
+
+st.dataframe(topicModel_df.iloc[:, :topicModel_count])
 func.emptyLine()
 
 # Assignment 3 Section
