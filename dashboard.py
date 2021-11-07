@@ -25,9 +25,6 @@ import emoji
 import string
 from wordcloud import WordCloud
 from textblob import TextBlob
-import gensim
-from gensim import corpora
-import pyLDAvis.gensim_models
 
 import networkx as nx
 from operator import itemgetter
@@ -451,14 +448,14 @@ func.emptyLine()
 
 filteredSA_df = func.getFilterSA_dataframe(sentimentAnalysis_df, wordcloudPolarity_option)
 wordcloudPolarity_graph, df_polarityTermCount = func.getWordCloud(filteredSA_df, ngramValue_option)
-col_temp1, col_temp2 = st.columns(2)
-with col_temp1:
+col_wordcloudPolarity, col_polarityTermCount = st.columns(2)
+with col_wordcloudPolarity:
     st.subheader(f"{accName}'s {wordcloudPolarity_option} Polarity WordCloud")
     plt.imshow(wordcloudPolarity_graph, interpolation='bilinear')
     plt.axis("off")
     plt.show()
     st.pyplot()
-with col_temp2:
+with col_polarityTermCount:
     st.subheader(f"{accName}'s {wordcloudPolarity_option} Polarity Term Frequency")
     expander_termFrequency = st.expander(label='Set Conditions')
     with expander_termFrequency:

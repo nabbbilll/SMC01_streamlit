@@ -24,9 +24,6 @@ import emoji
 import string
 from wordcloud import WordCloud
 from textblob import TextBlob
-import gensim
-from gensim import corpora
-import pyLDAvis.gensim_models
 
 import networkx as nx
 from operator import itemgetter
