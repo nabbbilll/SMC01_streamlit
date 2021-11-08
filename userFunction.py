@@ -966,6 +966,9 @@ def dailySentimentAnalysisGraph(text_df, screen_name, startDate_select, endDate_
     return layer, final_result
 
 def getTopicModeling(screen_name):
+	if screen_name == "YoutubeMusic":
+		screen_name = screen_name.lower()
+		
     fName = "datasets/{}/topicModel.csv".format(screen_name)
     df = pd.read_csv(fName)
     df = df.set_axis(['keyword1','keyword2','keyword3','keyword4','keyword5',
